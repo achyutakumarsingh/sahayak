@@ -52,5 +52,12 @@
       "name": "Disaster & Climate Resilience",
       "description": "Hazard alerts for your district and an AI-generated preparedness checklist tailored to the threat."
     }
+  },
+  "disclaimer": {
+    "verifyLabel": "Please verify",
+    "adviceBody": "Sahayak's guidance is a starting point, not an official ruling. Confirm eligibility, dosages and deadlines with the relevant department or a qualified professional before you act on it.",
+    "sampleLabel": "Sample data",
+    "sampleBody": "The figures on this screen are sample data for the prototype demo. They are not live readings.",
+    "source": "Source: curated scheme dataset, revised 2026"
   }
 }

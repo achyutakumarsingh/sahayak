@@ -1,8 +1,8 @@
-import Link from "next/link";
-
+import { Button, Card, SectionHeader, StatusDot } from "@/components/ui";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
-import { getModule, type ModuleSlug } from "@/lib/modules";
+import { getModule, modules, type ModuleSlug } from "@/lib/modules";
+import { localePath } from "@/lib/routes";
 
 /**
  * Shared placeholder body for the eight module routes. Each route keeps its own
@@ -19,29 +19,26 @@ export function ModuleStub({
 }) {
   const def = getModule(slug);
   const copy = dict.modules[slug];
+  const index = modules.findIndex((m) => m.slug === slug) + 1;
 
   return (
     <article className="mx-auto max-w-5xl px-5 py-12">
-      <p className="label">
-        {def.monogram}
-        {def.flagship ? ` · ${dict.status.flagship}` : ""}
-      </p>
+      <SectionHeader
+        as="h1"
+        index={index}
+        eyebrow={def.flagship ? dict.status.flagship : def.monogram}
+        title={copy.name}
+        description={copy.description}
+        action={<StatusDot tone="warn" label={dict.status.scaffold} />}
+      />
 
-      <h1 className="mt-3 text-2xl font-semibold tracking-tight text-fg">
-        {copy.name}
-      </h1>
-
-      <p className="mt-3 max-w-2xl text-lg text-muted">{copy.description}</p>
-
-      <div className="card mt-8 max-w-2xl p-5">
+      <Card tone="sunken" className="mt-8 max-w-2xl">
         <p className="label">{dict.status.scaffold}</p>
-        <p className="mt-2 text-muted">{dict.status.scaffoldNote}</p>
-      </div>
+        <p className="mt-2 text-ink-2">{dict.status.scaffoldNote}</p>
+      </Card>
 
       <p className="mt-8">
-        <Link href={`/${locale}` as never} className="cta">
-          {dict.app.backToHome}
-        </Link>
+        <Button href={localePath(locale)}>{dict.app.backToHome}</Button>
       </p>
     </article>
   );

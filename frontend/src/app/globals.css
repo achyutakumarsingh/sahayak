@@ -1,54 +1,151 @@
 @import "tailwindcss";
 
-/* ---------------------------------------------------------------------------
+/* ===========================================================================
    Sahayak design tokens
-   Flat surfaces, 1px hairline borders (never box-shadow), mono reserved for
-   labels / metadata / numbers, text+arrow CTAs as the default button style.
-   --------------------------------------------------------------------------- */
 
-:root {
-  /* Surfaces */
+   Light is the default on :root. Dark applies either from the system
+   preference or from an explicit data-theme, and because the dark block is
+   keyed on the attribute alone it also works on a nested element — that is
+   what lets /styleguide render both themes side by side on one page.
+
+   House rules: flat surfaces, 1px borders, 8px radius, never box-shadow.
+   The mono face is reserved for labels, metadata and numbers.
+   =========================================================================== */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
   --bg: #faf9f5;
   --surface: #ffffff;
-  --surface-sunken: #f2f0e9;
+  --surface-2: #f3f1ea;
+  --text: #14120f;
+  --text-2: #6b675f;
+  --border: #e4e0d6;
+  /* #CA4516, not the #E85C2B this palette started from: same hue (16deg) and
+     saturation, 10% darker in lightness. The original measured 3.50:1 on
+     --surface and 3.32:1 on --bg, which clears WCAG AA for large text but not
+     the 4.5:1 small text needs — and the accent carries small text in the
+     Button, the /01 eyebrow and the flagship label. This clears 4.5:1 on both
+     light surfaces and for white-on-accent. Dark mode was already fine and is
+     unchanged. */
+  --accent: #ca4516;
+  --accent-ink: #ffffff;
 
-  /* Text */
-  --fg: #16160f;
-  --fg-muted: #575349;
-  --fg-subtle: #857f72;
+  /* Derived: accent wash for selection and subtle fills. */
+  --accent-wash: #fbf0ec;
 
-  /* Lines */
-  --hairline: #e0dcd0;
-  --hairline-strong: #c6c0b0;
+  /* Constraint: --accent as small text measures 4.25:1 on --surface-2, just
+     under AA. No component does this today (sunken panels use --text-2 or a
+     status tone). Keep accent small text on --bg or --surface; a sunken panel
+     needs a status tone, or --accent one notch darker. */
 
-  /* Accent + status */
-  --accent: #1c6b47;
-  --accent-hover: #145136;
-  --accent-fg: #ffffff;
-  --accent-sunken: #e8f1ec;
-  --info: #1f5d8c;
-  --warn: #96590d;
-  --danger: #9d2f26;
-  --focus: #1c6b47;
-
-  /* Geometry — flat, minimal rounding */
-  --radius: 2px;
-  --hairline-width: 1px;
-
-  /* Type scale */
-  --step--1: 0.8125rem;
-  --step-0: 0.9375rem;
-  --step-1: 1.125rem;
-  --step-2: 1.5rem;
-  --step-3: 2rem;
-  --step-4: 2.75rem;
-
-  /* Motion */
-  --ease: cubic-bezier(0.2, 0, 0, 1);
-  --dur: 160ms;
+  /* Derived: status tones. Tuned to clear 4.5:1 as text on --surface-2 (the
+     tightest case — Disclaimer puts its label on a sunken panel), which also
+     clears --surface and --bg. */
+  --ok: #2f7a4b;
+  --warn: #9f5f11;
+  --danger: #b3261e;
+  --info: #2f6ba8;
 }
 
-/* Large-text mode (Accessibility module toggles this on <html>) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg: #14120f;
+    --surface: #1c1a16;
+    --surface-2: #201d18;
+    --text: #f3f1ea;
+    --text-2: #9a958a;
+    --border: #2c2a24;
+    --accent: #ff7a45;
+    --accent-ink: #14120f;
+
+    --accent-wash: #2a1c14;
+
+    --ok: #6bc38c;
+    --warn: #e3a857;
+    --danger: #f2867b;
+    --info: #7fb3e0;
+  }
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #14120f;
+  --surface: #1c1a16;
+  --surface-2: #201d18;
+  --text: #f3f1ea;
+  --text-2: #9a958a;
+  --border: #2c2a24;
+  --accent: #ff7a45;
+  --accent-ink: #14120f;
+
+  --accent-wash: #2a1c14;
+
+  --ok: #6bc38c;
+  --warn: #e3a857;
+  --danger: #f2867b;
+  --info: #7fb3e0;
+}
+
+/* ---------------------------------------------------------------------------
+   Accessibility modes. Set on <html> by the Persons with Disabilities module;
+   because every component reads the tokens, nothing needs a local override.
+   --------------------------------------------------------------------------- */
+
+:root[data-contrast="high"] {
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f0efea;
+  --text: #000000;
+  --text-2: #1f1d19;
+  --border: #000000;
+  --accent: #a63409;
+  --accent-ink: #ffffff;
+  --accent-wash: #f7ece7;
+  --ok: #14532d;
+  --warn: #6b3d05;
+  --danger: #8a1109;
+  --info: #10375c;
+}
+
+:root[data-contrast="high"][data-theme="dark"] {
+  --bg: #000000;
+  --surface: #000000;
+  --surface-2: #131313;
+  --text: #ffffff;
+  --text-2: #e8e8e8;
+  --border: #ffffff;
+  --accent: #ff9a6b;
+  --accent-ink: #000000;
+  --accent-wash: #241610;
+  --ok: #8fe3ad;
+  --warn: #ffc888;
+  --danger: #ffa79c;
+  --info: #a8cff2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-contrast="high"]:not([data-theme="light"]) {
+    --bg: #000000;
+    --surface: #000000;
+    --surface-2: #131313;
+    --text: #ffffff;
+    --text-2: #e8e8e8;
+    --border: #ffffff;
+    --accent: #ff9a6b;
+    --accent-ink: #000000;
+    --accent-wash: #241610;
+    --ok: #8fe3ad;
+    --warn: #ffc888;
+    --danger: #ffa79c;
+    --info: #a8cff2;
+  }
+}
+
 :root[data-text-size="large"] {
   --step--1: 1rem;
   --step-0: 1.1875rem;
@@ -58,64 +155,45 @@
   --step-4: 3.25rem;
 }
 
-/* High-contrast mode (Accessibility module toggles this on <html>) */
-:root[data-contrast="high"] {
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --surface-sunken: #f0f0f0;
-  --fg: #000000;
-  --fg-muted: #1a1a1a;
-  --fg-subtle: #333333;
-  --hairline: #000000;
-  --hairline-strong: #000000;
-  --accent: #00402a;
-  --accent-hover: #000000;
-  --accent-sunken: #e6efe9;
-  --info: #00325c;
-  --warn: #5c3300;
-  --danger: #7a0000;
-  --focus: #000000;
-}
+/* ---------------------------------------------------------------------------
+   Scale, geometry and motion — theme-independent.
+   --------------------------------------------------------------------------- */
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-contrast="high"]) {
-    --bg: #12120f;
-    --surface: #191916;
-    --surface-sunken: #212120;
-    --fg: #f2f0e9;
-    --fg-muted: #b3aea1;
-    --fg-subtle: #8b8578;
-    --hairline: #2f2f2b;
-    --hairline-strong: #46453f;
-    --accent: #74c39b;
-    --accent-hover: #94d4b3;
-    --accent-fg: #08150f;
-    --accent-sunken: #16241d;
-    --info: #7db6e0;
-    --warn: #dda45f;
-    --danger: #e8867d;
-    --focus: #74c39b;
-  }
+:root {
+  --step--1: 0.8125rem;
+  --step-0: 0.9375rem;
+  --step-1: 1.125rem;
+  --step-2: 1.5rem;
+  --step-3: 2rem;
+  --step-4: 2.75rem;
+
+  --radius: 8px;
+  --radius-sm: 4px;
+
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur: 160ms;
 }
 
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
-  --color-sunken: var(--surface-sunken);
-  --color-fg: var(--fg);
-  --color-muted: var(--fg-muted);
-  --color-subtle: var(--fg-subtle);
-  --color-hairline: var(--hairline);
-  --color-hairline-strong: var(--hairline-strong);
+  --color-surface-2: var(--surface-2);
+  /* --text / --text-2 map to `ink` so the utilities read text-ink,
+     not text-text. The CSS variables keep the names from the spec. */
+  --color-ink: var(--text);
+  --color-ink-2: var(--text-2);
+  --color-border: var(--border);
   --color-accent: var(--accent);
-  --color-accent-hover: var(--accent-hover);
-  --color-accent-fg: var(--accent-fg);
-  --color-accent-sunken: var(--accent-sunken);
-  --color-info: var(--info);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-wash: var(--accent-wash);
+
+  --color-ok: var(--ok);
   --color-warn: var(--warn);
   --color-danger: var(--danger);
+  --color-info: var(--info);
 
-  --radius-token: var(--radius);
+  --radius-card: var(--radius);
+  --radius-chip: var(--radius-sm);
 
   --text-xs: var(--step--1);
   --text-base: var(--step-0);
@@ -124,12 +202,14 @@
   --text-2xl: var(--step-3);
   --text-3xl: var(--step-4);
 
-  --font-sans: var(--font-inter), var(--font-devanagari), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: var(--font-inter-tight), var(--font-devanagari), ui-sans-serif,
+    system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo,
+    monospace;
 }
 
 * {
-  border-color: var(--hairline);
+  border-color: var(--border);
 }
 
 html {
@@ -138,7 +218,7 @@ html {
 
 body {
   background: var(--bg);
-  color: var(--fg);
+  color: var(--text);
   font-family: var(--font-sans);
   font-size: var(--step-0);
   line-height: 1.55;
@@ -146,14 +226,15 @@ body {
 }
 
 ::selection {
-  background: var(--accent-sunken);
-  color: var(--fg);
+  background: var(--accent-wash);
+  color: var(--text);
 }
 
+/* Zero-specificity baseline so component classes can refine it. */
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -166,53 +247,20 @@ body {
 }
 
 @layer components {
-  /* Flat card — hairline border, no shadow, ever. */
-  .card {
-    background: var(--surface);
-    border: var(--hairline-width) solid var(--hairline);
-    border-radius: var(--radius);
-  }
-
   /* Mono is reserved for labels, metadata and numbers. */
   .label {
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--fg-subtle);
+    color: var(--text-2);
   }
 
   .meta {
     font-family: var(--font-mono);
     font-size: var(--step--1);
-    color: var(--fg-muted);
+    color: var(--text-2);
     font-variant-numeric: tabular-nums;
-  }
-
-  /* Default CTA: text + arrow, no filled pill. */
-  .cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5ch;
-    color: var(--accent);
-    font-weight: 500;
-    text-decoration: none;
-    border-bottom: var(--hairline-width) solid transparent;
-    transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
-  }
-
-  .cta::after {
-    content: "→";
-    transition: transform var(--dur) var(--ease);
-  }
-
-  .cta:hover {
-    color: var(--accent-hover);
-    border-bottom-color: currentColor;
-  }
-
-  .cta:hover::after {
-    transform: translateX(3px);
   }
 
   .skip-link {
@@ -221,8 +269,9 @@ body {
     top: -3rem;
     z-index: 50;
     background: var(--surface);
-    color: var(--fg);
-    border: var(--hairline-width) solid var(--hairline-strong);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
     padding: 0.5rem 0.875rem;
     transition: top var(--dur) var(--ease);
   }

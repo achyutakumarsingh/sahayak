@@ -16,7 +16,7 @@ sahayak/
 ├── frontend/          Next.js 16 (App Router) · TypeScript · Tailwind v4 · PWA
 │   └── src/
 │       ├── app/[locale]/    Locale-scoped routes — one folder per module
-│       ├── components/      Shared UI (header, module card, module stub)
+│       ├── components/ui/   Base components (Card, Button, SectionHeader, …)
 │       ├── i18n/            Locale config + en/hi dictionaries
 │       └── lib/             Module registry, API helper
 ├── backend/           FastAPI · Claude orchestration + ONNX model server
@@ -143,22 +143,75 @@ Routes live under `src/app/[locale]/`, where `locale` is `en` or `hi`.
 ## Design system
 
 Tokens live at the top of `frontend/src/app/globals.css` and are exposed to
-Tailwind through `@theme inline`, so `bg-surface`, `text-muted`,
-`border-hairline` and friends resolve to the CSS variables.
+Tailwind through `@theme inline`, so utilities resolve to the live CSS
+variables and re-theme at runtime.
 
-House rules, enforced by the `.card`, `.label`, `.meta` and `.cta` component
-classes in the same file:
+| Token          | Light     | Dark      | Tailwind utility  |
+| -------------- | --------- | --------- | ----------------- |
+| `--bg`         | `#FAF9F5` | `#14120F` | `bg-bg`           |
+| `--surface`    | `#FFFFFF` | `#1C1A16` | `bg-surface`      |
+| `--surface-2`  | `#F3F1EA` | `#201D18` | `bg-surface-2`    |
+| `--text`       | `#14120F` | `#F3F1EA` | `text-ink`        |
+| `--text-2`     | `#6B675F` | `#9A958A` | `text-ink-2`      |
+| `--border`     | `#E4E0D6` | `#2C2A24` | `border-border`   |
+| `--accent`     | `#CA4516` | `#FF7A45` | `text/bg-accent`  |
+| `--accent-ink` | `#FFFFFF` | `#14120F` | `text-accent-ink` |
 
-- Flat cards with **1px hairline borders — never box-shadow**.
-- The mono face is reserved for labels, metadata and numbers.
-- The default CTA is **text + arrow**, not a filled pill.
-- `[data-text-size="large"]` and `[data-contrast="high"]` on `<html>` re-map the
-  tokens for the Accessibility module — no per-component overrides needed.
+`--text` and `--text-2` map to the `ink` / `ink-2` colour names in Tailwind so
+the utilities read `text-ink` rather than `text-text`. The CSS variables keep
+the names from the spec. Derived on top: `--accent-wash` and the status tones
+`--ok` / `--warn` / `--danger` / `--info`.
 
-> **Note:** `CLAUDE.md` refers to "the exact CSS variables in the design-system
-> prompt below", but that prompt block is not in the file. The tokens here were
-> derived from the stated constraints. Drop in the real values when you have
-> them — everything downstream reads the variables, so nothing else changes.
+**Theming.** Light is the default on `:root`. Dark comes from either
+`prefers-color-scheme` or an explicit `data-theme`, and because the dark block
+is keyed on the attribute alone it also applies to a *nested* element — which
+is how `/styleguide` renders both palettes on one page.
+
+**Fonts.** Inter Tight for display and body, JetBrains Mono for labels,
+metadata and numbers only, both via `next/font/google`. Noto Sans Devanagari
+sits behind Inter Tight in the sans stack — Inter Tight has no Devanagari
+coverage, so Hindi would otherwise fall back to a system face.
+
+**House rules.** Flat cards, 1px borders, 8px radius, **never box-shadow**.
+Text + arrow is the default CTA; solid accent is reserved for the single
+primary action on a screen.
+
+**Accessibility modes.** `data-text-size="large"` and `data-contrast="high"` on
+`<html>` re-map the tokens globally, so the Persons with Disabilities module
+needs no per-component overrides.
+
+### Base components
+
+`frontend/src/components/ui/` — import from `@/components/ui`:
+
+| Component       | Notes                                                            |
+| --------------- | ---------------------------------------------------------------- |
+| `Card`          | Flat, 1px border, 8px radius. `tone` surface/sunken/bare, `interactive` for hover+focus-within |
+| `Button`        | `variant="primary"` (solid accent) or `"text"` (default, + arrow). Renders `<a>` when given `href` |
+| `SectionHeader` | Mono `/01` eyebrow + title, optional description and action slot  |
+| `StatusDot`     | Coloured dot + mono label. The label carries the meaning, not the colour |
+| `LanguageSwitch`| en/hi toggle; real links, works without JavaScript                |
+| `Disclaimer`    | Bordered note for advice output (`tone="advice"`) and mock data (`tone="sample"`) |
+
+### Styleguide
+
+<http://localhost:3000/en/styleguide> renders every component against both
+palettes side by side. Swatch hex values are read live from the DOM, so they
+cannot drift from `globals.css`. The route is `noindex`, and a link appears in
+the site footer in development only.
+
+> **Contrast.** Every text pair in both themes meets WCAG AA (4.5:1), and the
+> focus ring clears 2.4.11 (3:1) at 4.56:1 light / 6.72:1 dark. Two tokens were
+> tuned to get there: the light accent is `#CA4516` rather than the `#E85C2B`
+> this palette started from — same hue and saturation, 10% darker, because the
+> original measured 3.50:1 and the accent carries small text in `Button`, the
+> `/01` eyebrow and the flagship label; and `--warn` is `#9F5F11`, tuned
+> against `--surface-2`, the tightest case, since `Disclaimer` puts its label
+> on a sunken panel. Dark mode was already clear at 6.7–8.3:1 and is unchanged.
+>
+> One documented constraint: `--accent` as *small text* on `--surface-2`
+> measures 4.25:1. No component does this today — sunken panels use `--text-2`
+> or a status tone. Keep accent small text on `--bg` or `--surface`.
 
 ## Non-negotiables
 

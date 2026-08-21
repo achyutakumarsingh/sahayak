@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Noto_Sans_Devanagari } from "next/font/google";
+import { Inter_Tight, JetBrains_Mono, Noto_Sans_Devanagari } from "next/font/google";
 import { notFound } from "next/navigation";
 
 import "../globals.css";
@@ -10,8 +10,8 @@ import { SiteHeader } from "@/components/site-header";
 import { isLocale, locales, localeTags } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 
-const sans = Inter({
-  variable: "--font-inter",
+const sans = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
   display: "swap",
 });
@@ -23,7 +23,7 @@ const devanagari = Noto_Sans_Devanagari({
 });
 
 const mono = JetBrains_Mono({
-  variable: "--font-mono-face",
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -32,8 +32,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#faf9f5" },
-    { media: "(prefers-color-scheme: dark)", color: "#12120f" },
+    { media: "(prefers-color-scheme: light)", color: "#FAF9F5" },
+    { media: "(prefers-color-scheme: dark)", color: "#14120F" },
   ],
 };
 
@@ -98,7 +98,7 @@ export default async function LocaleLayout({
         <main id="main" tabIndex={-1} className="flex-1 outline-none">
           {children}
         </main>
-        <SiteFooter dict={dict} />
+        <SiteFooter locale={locale} dict={dict} />
         <ServiceWorkerRegistrar />
       </body>
     </html>
