@@ -1,0 +1,22 @@
+{
+  "module": "services",
+  "title": "Government scheme navigator",
+  "status": "placeholder",
+  "note": "PLACEHOLDER CORPUS. Written to exercise the grounded-agent pattern, not to be relied on. Replace every entry with curated, sourced data before this module is shown to real users. The agent answers only from this file, so anything missing here is correctly refused.",
+  "last_reviewed": null,
+  "sources": [
+    "INTENTIONALLY EMPTY — scheme records must be curated from official sources before use"
+  ],
+  "entries": [
+    {
+      "id": "corpus-empty",
+      "topic": "Scheme data not yet loaded",
+      "content": "No verified scheme records have been loaded into this module yet. Scheme names, eligibility rules, benefit amounts, deadlines and document lists must come from official sources and be reviewed before they appear here. Until that data is added, this module cannot answer questions about specific schemes and must say so."
+    },
+    {
+      "id": "where-to-check",
+      "topic": "Where to verify a scheme",
+      "content": "The national scheme directory is myScheme (myscheme.gov.in). A Common Service Centre (CSC) or the relevant department office can confirm eligibility and the current document list in person."
+    }
+  ]
+}

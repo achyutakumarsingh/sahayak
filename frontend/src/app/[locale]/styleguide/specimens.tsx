@@ -98,7 +98,7 @@ export function Specimens({
           index={3}
           as="h3"
           title="Card"
-          description="Flat, 1px border, 8px radius. Never a box-shadow — depth comes from the surface tokens."
+          description="Flat, 1px border, 8px radius. Never a box-shadow. Interactive cards add a cursor-tracking glow; static ones stay flat."
         />
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <Card>
@@ -112,7 +112,8 @@ export function Specimens({
           <Card interactive className="sm:col-span-2">
             <p className="label">Interactive</p>
             <p className="mt-2 text-ink-2">
-              Border shifts on hover and focus-within. Still no shadow.
+              Move the cursor across this card — the accent glow follows it, and
+              the border shifts with it.
             </p>
           </Card>
         </div>
@@ -124,7 +125,7 @@ export function Specimens({
           index={4}
           as="h3"
           title="Button"
-          description="Text + arrow is the default. Solid accent is reserved for the one primary action on a screen."
+          description="Text + arrow is the default. Solid accent is reserved for the one primary action on a screen. Both glow on hover."
         />
         <div className="mt-4">
           <Row label="Primary">
@@ -230,6 +231,39 @@ export function Specimens({
           <Disclaimer tone="sample" label={dict.disclaimer.sampleLabel}>
             {dict.disclaimer.sampleBody}
           </Disclaimer>
+        </div>
+      </section>
+
+      {/* -- Hover glow ---------------------------------------------------- */}
+      <section>
+        <SectionHeader
+          index={9}
+          as="h3"
+          title="Hover glow"
+          description="Interactive surfaces only. Mouse-only and decorative — every state it dresses is also carried by a border, an underline or a focus-visible outline."
+        />
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <Card interactive>
+            <p className="label">Glows</p>
+            <p className="mt-2 text-ink-2">Interactive card.</p>
+          </Card>
+          <Card>
+            <p className="label">Stays flat</p>
+            <p className="mt-2 text-ink-2">Static card — no glow.</p>
+          </Card>
+        </div>
+        <div className="mt-4">
+          <Row label="Buttons">
+            <Button variant="primary">{dict.app.open}</Button>
+            <Button>{dict.app.backToHome}</Button>
+          </Row>
+          <Row label="Suppressed">
+            <span className="text-ink-2">
+              Coarse pointers, high-contrast mode and forced-colors get no glow
+              at all. Reduced motion drops the tracking and falls back to a flat
+              hover tint. Keyboard focus keeps its outline, untouched.
+            </span>
+          </Row>
         </div>
       </section>
     </div>

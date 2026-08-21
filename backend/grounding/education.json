@@ -1,0 +1,22 @@
+{
+  "module": "education",
+  "title": "NCERT doubt solving",
+  "status": "placeholder",
+  "note": "PLACEHOLDER CORPUS. Written to exercise the grounded-agent pattern, not to be relied on. Replace every entry with curated, sourced data before this module is shown to real users. The agent answers only from this file, so anything missing here is correctly refused.",
+  "last_reviewed": null,
+  "sources": [
+    "INTENTIONALLY EMPTY — load real NCERT chapter excerpts with class, subject, chapter and page"
+  ],
+  "entries": [
+    {
+      "id": "corpus-empty",
+      "topic": "Chapter excerpts not yet loaded",
+      "content": "No NCERT chapter excerpts have been loaded into this module yet. Until they are, this module cannot answer subject questions and must say so rather than answering from general knowledge. Every answer must cite the chapter and page it came from."
+    },
+    {
+      "id": "how-citations-work",
+      "topic": "How answers will be cited",
+      "content": "When chapter excerpts are loaded, each entry carries its class, subject, chapter number and chapter title, and every answer names them so a student can turn to the page in their own book."
+    }
+  ]
+}

@@ -5,14 +5,25 @@
     "skipToContent": "Skip to main content",
     "languageLabel": "Language",
     "backToHome": "All modules",
-    "open": "Open"
+    "open": "Open",
+    "home": "Home",
+    "modules": "Modules",
+    "more": "More",
+    "close": "Close",
+    "menu": "Menu",
+    "primaryNav": "Main navigation",
+    "moduleNav": "Modules",
+    "settings": "Settings",
+    "skipToNav": "Skip to navigation"
   },
   "home": {
     "eyebrow": "OOSC 4.0 · Problem statement 5",
     "heading": "One platform. Eight communities.",
     "intro": "Sahayak puts practical, offline-friendly AI in the hands of farmers, fishermen, artisans, vendors, students and citizens across India — in their own language.",
     "modulesLabel": "Modules",
-    "moduleCount": "8 modules"
+    "moduleCount": "8 modules",
+    "communityLabel": "Serves",
+    "browseAll": "Browse all eight modules"
   },
   "status": {
     "scaffold": "Scaffold",
@@ -22,35 +33,43 @@
   "modules": {
     "farmers": {
       "name": "Farmers",
-      "description": "Diagnose crop disease from a photo, then get grounded treatment advice, mandi prices and weather-aware sowing tips."
+      "description": "Diagnose crop disease from a photo, then get grounded treatment advice, mandi prices and weather-aware sowing tips.",
+      "community": "Smallholder farmers"
     },
     "fishermen": {
       "name": "Fishermen",
-      "description": "Live sea conditions — wave height, wind and swell — turned into a plain-language go / no-go safety verdict."
+      "description": "Live sea conditions — wave height, wind and swell — turned into a plain-language go / no-go safety verdict.",
+      "community": "Coastal fishing crews"
     },
     "artisans": {
       "name": "Artisans & Small Producers",
-      "description": "Photograph a product and get a listing title, description, fair price band and tags in your own language."
+      "description": "Photograph a product and get a listing title, description, fair price band and tags in your own language.",
+      "community": "Craftspeople and home producers"
     },
     "vendors": {
       "name": "Micro-Entrepreneurs & Vendors",
-      "description": "A daily demand and inventory note, a simple income–expense log, and a matcher for schemes you qualify for."
+      "description": "A daily demand and inventory note, a simple income–expense log, and a matcher for schemes you qualify for.",
+      "community": "Street vendors and micro-shops"
     },
     "services": {
       "name": "Public Services Navigator",
-      "description": "Ask in plain language and find out which government schemes you are eligible for, grounded in curated official data."
+      "description": "Ask in plain language and find out which government schemes you are eligible for, grounded in curated official data.",
+      "community": "Citizens facing government forms"
     },
     "accessibility": {
       "name": "Persons with Disabilities",
-      "description": "Voice-first navigation plus large-text and high-contrast modes that carry across every module in Sahayak."
+      "description": "Voice-first navigation plus large-text and high-contrast modes that carry across every module in Sahayak.",
+      "community": "Persons with disabilities"
     },
     "education": {
       "name": "Rural Education",
-      "description": "A patient doubt-solving tutor grounded on real NCERT chapter excerpts, with a citation for every answer."
+      "description": "A patient doubt-solving tutor grounded on real NCERT chapter excerpts, with a citation for every answer.",
+      "community": "Rural and first-generation learners"
     },
     "disaster": {
       "name": "Disaster & Climate Resilience",
-      "description": "Hazard alerts for your district and an AI-generated preparedness checklist tailored to the threat."
+      "description": "Hazard alerts for your district and an AI-generated preparedness checklist tailored to the threat.",
+      "community": "Flood- and cyclone-prone districts"
     }
   },
   "disclaimer": {
@@ -59,5 +78,68 @@
     "sampleLabel": "Sample data",
     "sampleBody": "The figures on this screen are sample data for the prototype demo. They are not live readings.",
     "source": "Source: curated scheme dataset, revised 2026"
+  },
+  "a11y": {
+    "title": "Accessibility",
+    "summary": "Display and input settings. These apply across every module and are remembered on this device.",
+    "largeText": "Large text",
+    "largeTextHint": "Increases text size and spacing everywhere in Sahayak.",
+    "voiceMode": "Voice mode",
+    "voiceModeHint": "Ask your question by speaking, and hear the answer read back.",
+    "comingSoon": "Not wired up yet",
+    "voicePending": "Voice mode is on and your choice is saved, but speech input and output are not connected yet. Nothing on screen will read aloud until they are.",
+    "on": "On",
+    "off": "Off"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "account": "Account",
+    "title": "Sign in to Sahayak",
+    "intro": "Sign in with your mobile number so your logs, saved answers and settings stay on this device.",
+    "demoLabel": "Demo stub — no real SMS",
+    "demoBody": "This is a prototype sign-in. No message is sent and no number is checked. Any 10-digit number and any 4 to 6 digit code will let you in, and the session is stored only in this browser.",
+    "phoneLabel": "Mobile number",
+    "phoneHint": "10 digits, without +91.",
+    "phonePlaceholder": "9876543210",
+    "sendCode": "Send code",
+    "otpLabel": "Verification code",
+    "otpHint": "Any 4 to 6 digits will work.",
+    "otpPlaceholder": "1234",
+    "verify": "Verify and sign in",
+    "changeNumber": "Use a different number",
+    "codeSentTo": "Code sent to",
+    "signedInAs": "Signed in as",
+    "notSignedIn": "Not signed in",
+    "errorPhone": "Enter a 10-digit mobile number.",
+    "errorOtp": "Enter a code of 4 to 6 digits.",
+    "signInPrompt": "Sign in to keep your work on this device."
+  },
+  "chat": {
+    "title": "Ask a question",
+    "intro": "Answers come only from this module's reference data. If it is not in there, you will be told so.",
+    "inputLabel": "Your question",
+    "placeholder": "Type your question…",
+    "send": "Send",
+    "stop": "Stop",
+    "clear": "Clear",
+    "thinking": "Working…",
+    "you": "You",
+    "assistant": "Sahayak",
+    "empty": "No questions yet. Ask anything this module covers.",
+    "log": "Conversation",
+    "errorGeneric": "Something went wrong. Try again.",
+    "errorOffline": "Could not reach the server. Check that the backend is running.",
+    "errorNotConfigured": "The Claude API key is not set on the server, so answers cannot be generated yet.",
+    "suggestionsLabel": "Try asking",
+    "disclaimerLabel": "Please verify",
+    "disclaimerBody": "This module answers only from a small curated dataset, and that dataset is still placeholder content. Confirm anything important with the relevant department or a qualified person before acting on it.",
+    "suggestions": {
+      "fishermen": [
+        "Is 1.8 metre wave height safe for a small boat?",
+        "What number do I call in an emergency at sea?",
+        "What is the price of fish in Kochi today?"
+      ]
+    }
   }
 }

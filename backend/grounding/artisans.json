@@ -1,0 +1,32 @@
+{
+  "module": "artisans",
+  "title": "Selling handmade goods online",
+  "status": "placeholder",
+  "note": "PLACEHOLDER CORPUS. Written to exercise the grounded-agent pattern, not to be relied on. Replace every entry with curated, sourced data before this module is shown to real users. The agent answers only from this file, so anything missing here is correctly refused.",
+  "last_reviewed": null,
+  "sources": [
+    "Placeholder — replace with curated craft-marketing and GI registry guidance"
+  ],
+  "entries": [
+    {
+      "id": "listing-parts",
+      "topic": "What a good product listing contains",
+      "content": "A listing needs a short title naming the object and its material, three to five lines describing size, material and how it was made, and clear photographs in daylight against a plain background."
+    },
+    {
+      "id": "pricing",
+      "topic": "How to think about price",
+      "content": "Work out the cost of materials, then add a fair value for your hours, then add packing and postage. Selling below material cost plus your time is a loss even when it feels like a sale."
+    },
+    {
+      "id": "gi-tags",
+      "topic": "Geographical Indication tags",
+      "content": "Some Indian crafts carry a Geographical Indication (GI) tag which identifies where they were made. Only producers registered under that GI may use the name. Do not claim a GI you are not registered for."
+    },
+    {
+      "id": "photos",
+      "topic": "Photographing a product on a phone",
+      "content": "Shoot in indirect daylight near a window, not under a tube light and not in direct sun. Use a plain cloth or sheet of paper as background. Take one photo of the whole object and two close-ups of detail."
+    }
+  ]
+}

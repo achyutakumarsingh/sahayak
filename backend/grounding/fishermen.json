@@ -1,0 +1,38 @@
+{
+  "module": "fishermen",
+  "title": "Sea conditions and small-boat safety",
+  "status": "placeholder",
+  "note": "PLACEHOLDER CORPUS. Written to exercise the grounded-agent pattern, not to be relied on. Replace every entry with curated, sourced data before this module is shown to real users. The agent answers only from this file, so anything missing here is correctly refused.",
+  "last_reviewed": null,
+  "sources": [
+    "INCOIS ocean information services (to be cited properly)",
+    "Indian Coast Guard public safety guidance (to be cited properly)"
+  ],
+  "entries": [
+    {
+      "id": "wave-bands",
+      "topic": "What wave height means for a small boat",
+      "content": "Significant wave height under 1 metre is generally calm for a small country boat. 1 to 1.5 metres is choppy and uncomfortable but usually workable for an experienced crew. Above 1.5 metres, small open boats take water easily. Above 2.5 metres, do not go out in a small boat."
+    },
+    {
+      "id": "wind-bands",
+      "topic": "What wind speed means",
+      "content": "Wind under 20 km/h is workable. 20 to 35 km/h raises steep short waves and makes returning to shore slow. Above 40 km/h, small boats should stay in harbour."
+    },
+    {
+      "id": "swell",
+      "topic": "Swell versus wind waves",
+      "content": "Swell is long, low waves travelling from a distant storm; it can be dangerous near the shore even when the local wind is light, because swell steepens and breaks in shallow water. Check swell height separately from wind waves."
+    },
+    {
+      "id": "incois",
+      "topic": "Official Indian warnings",
+      "content": "INCOIS (Indian National Centre for Ocean Information Services) issues High Wave Alerts and small-craft advisories for the Indian coast. An INCOIS warning overrides anything this tool says. The Coast Guard emergency number in India is 1554."
+    },
+    {
+      "id": "before-leaving",
+      "topic": "Before leaving shore",
+      "content": "Tell someone on shore where you are going and when you expect to return. Carry life jackets for everyone aboard, a charged phone in a waterproof bag, and drinking water."
+    }
+  ]
+}

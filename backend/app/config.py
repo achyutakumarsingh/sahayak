@@ -19,6 +19,14 @@ class Settings(BaseSettings):
     # Claude — every "agent" module in Sahayak runs through this key.
     anthropic_api_key: Optional[str] = None
     anthropic_model: str = "claude-sonnet-5"
+    # Deliberately small: these modules answer in 40-80 words, and a low cap
+    # keeps a runaway reply from costing real money.
+    anthropic_max_tokens: int = 700
+    # Simple grounded lookups do not need deep reasoning; low effort is
+    # cheaper and faster while leaving adaptive thinking on.
+    anthropic_effort: str = "low"
+    # Override to point the SDK at a local stub instead of the real API.
+    anthropic_base_url: Optional[str] = None
 
     # Prototype storage. Swap for a Postgres DSN when the round allows.
     database_url: str = "sqlite:///./sahayak.db"

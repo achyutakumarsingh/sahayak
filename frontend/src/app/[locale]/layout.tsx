@@ -4,9 +4,11 @@ import { notFound } from "next/navigation";
 
 import "../globals.css";
 
+import { PointerGlow } from "@/components/pointer-glow";
+import { AppProviders } from "@/components/providers";
 import { ServiceWorkerRegistrar } from "@/components/service-worker-registrar";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
+import { AppShell } from "@/components/shell/app-shell";
+import { PreferencesScript } from "@/components/shell/preferences-script";
 import { isLocale, locales, localeTags } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 
@@ -58,6 +60,12 @@ export async function generateMetadata({
     description: dict.app.tagline,
     applicationName: dict.app.name,
     manifest: "/manifest.webmanifest",
+    other: {
+      // Sahayak ships its own light/dark themes. Without this, Dark Reader
+      // re-colours the page on top of them — wrong colours in light mode, and
+      // a hydration mismatch from the attributes it injects into <html>.
+      "darkreader-lock": "true",
+    },
     appleWebApp: {
       capable: true,
       title: dict.app.name,
@@ -88,18 +96,20 @@ export default async function LocaleLayout({
   return (
     <html
       lang={localeTags[locale]}
+      suppressHydrationWarning
       className={`${sans.variable} ${devanagari.variable} ${mono.variable} h-full`}
     >
-      <body className="flex min-h-full flex-col">
-        <a href="#main" className="skip-link">
-          {dict.app.skipToContent}
-        </a>
-        <SiteHeader locale={locale} dict={dict} />
-        <main id="main" tabIndex={-1} className="flex-1 outline-none">
-          {children}
-        </main>
-        <SiteFooter locale={locale} dict={dict} />
-        <ServiceWorkerRegistrar />
+      <head>
+        <PreferencesScript />
+      </head>
+      <body className="min-h-full">
+        <AppProviders>
+          <AppShell locale={locale} dict={dict}>
+            {children}
+          </AppShell>
+          <PointerGlow />
+          <ServiceWorkerRegistrar />
+        </AppProviders>
       </body>
     </html>
   );

@@ -41,3 +41,12 @@ labels/metadata/numbers only, text+arrow CTAs as the default button style.
 - Persons with Disabilities — voice-first mode (speech in/out) and a large-text/high-contrast mode applied across every module.
 - Rural Education — doubt-solving chat grounded on a small corpus of real NCERT chapter excerpts, with citations.
 - Disaster & Climate Resilience — alert banner (clearly labeled sample data for the demo) plus an AI-generated, hazard-specific preparedness checklist.
+
+## Hover style (supersedes the earlier "never box-shadow" note for hover only)
+Interactive surfaces (Card, Button, module tiles) use a soft cursor-tracking
+accent glow on hover — a radial light in the accent color that follows the
+mouse position, inspired by colecta.ai. Keep it subtle: low opacity (12-18%),
+soft blur, no scale/transform, no change to layout. This is decorative, not
+functional — it must never be the only signal of an interactive/focus state
+(focus-visible outlines stay mandatory for keyboard users). Static surfaces
+(non-interactive cards, panels) stay flat with no glow.

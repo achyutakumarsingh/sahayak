@@ -1,0 +1,187 @@
+{
+  "note": "Offshore sample points near each district's main landing centre. Coordinates are shifted seaward so the marine grid returns data; they are not the town centre and not a fishing ground.",
+  "districts": [
+    {
+      "slug": "thiruvananthapuram",
+      "name": {
+        "en": "Thiruvananthapuram",
+        "hi": "तिरुवनंतपुरम"
+      },
+      "state": {
+        "en": "Kerala",
+        "hi": "केरल"
+      },
+      "latitude": 8.4,
+      "longitude": 76.8
+    },
+    {
+      "slug": "kochi",
+      "name": {
+        "en": "Kochi",
+        "hi": "कोच्चि"
+      },
+      "state": {
+        "en": "Kerala",
+        "hi": "केरल"
+      },
+      "latitude": 9.9,
+      "longitude": 76.1
+    },
+    {
+      "slug": "kozhikode",
+      "name": {
+        "en": "Kozhikode",
+        "hi": "कोझिकोड"
+      },
+      "state": {
+        "en": "Kerala",
+        "hi": "केरल"
+      },
+      "latitude": 11.25,
+      "longitude": 75.6
+    },
+    {
+      "slug": "mangaluru",
+      "name": {
+        "en": "Mangaluru",
+        "hi": "मंगलुरु"
+      },
+      "state": {
+        "en": "Karnataka",
+        "hi": "कर्नाटक"
+      },
+      "latitude": 12.87,
+      "longitude": 74.7
+    },
+    {
+      "slug": "north-goa",
+      "name": {
+        "en": "North Goa",
+        "hi": "उत्तर गोवा"
+      },
+      "state": {
+        "en": "Goa",
+        "hi": "गोवा"
+      },
+      "latitude": 15.5,
+      "longitude": 73.65
+    },
+    {
+      "slug": "ratnagiri",
+      "name": {
+        "en": "Ratnagiri",
+        "hi": "रत्नागिरी"
+      },
+      "state": {
+        "en": "Maharashtra",
+        "hi": "महाराष्ट्र"
+      },
+      "latitude": 17.0,
+      "longitude": 73.1
+    },
+    {
+      "slug": "mumbai",
+      "name": {
+        "en": "Mumbai",
+        "hi": "मुंबई"
+      },
+      "state": {
+        "en": "Maharashtra",
+        "hi": "महाराष्ट्र"
+      },
+      "latitude": 18.95,
+      "longitude": 72.65
+    },
+    {
+      "slug": "porbandar",
+      "name": {
+        "en": "Porbandar",
+        "hi": "पोरबंदर"
+      },
+      "state": {
+        "en": "Gujarat",
+        "hi": "गुजरात"
+      },
+      "latitude": 21.6,
+      "longitude": 69.5
+    },
+    {
+      "slug": "kanyakumari",
+      "name": {
+        "en": "Kanyakumari",
+        "hi": "कन्याकुमारी"
+      },
+      "state": {
+        "en": "Tamil Nadu",
+        "hi": "तमिलनाडु"
+      },
+      "latitude": 8.0,
+      "longitude": 77.5
+    },
+    {
+      "slug": "nagapattinam",
+      "name": {
+        "en": "Nagapattinam",
+        "hi": "नागपट्टिनम"
+      },
+      "state": {
+        "en": "Tamil Nadu",
+        "hi": "तमिलनाडु"
+      },
+      "latitude": 10.8,
+      "longitude": 79.95
+    },
+    {
+      "slug": "chennai",
+      "name": {
+        "en": "Chennai",
+        "hi": "चेन्नई"
+      },
+      "state": {
+        "en": "Tamil Nadu",
+        "hi": "तमिलनाडु"
+      },
+      "latitude": 13.08,
+      "longitude": 80.4
+    },
+    {
+      "slug": "visakhapatnam",
+      "name": {
+        "en": "Visakhapatnam",
+        "hi": "विशाखापत्तनम"
+      },
+      "state": {
+        "en": "Andhra Pradesh",
+        "hi": "आंध्र प्रदेश"
+      },
+      "latitude": 17.7,
+      "longitude": 83.35
+    },
+    {
+      "slug": "puri",
+      "name": {
+        "en": "Puri",
+        "hi": "पुरी"
+      },
+      "state": {
+        "en": "Odisha",
+        "hi": "ओडिशा"
+      },
+      "latitude": 19.75,
+      "longitude": 85.95
+    },
+    {
+      "slug": "purba-medinipur",
+      "name": {
+        "en": "Purba Medinipur",
+        "hi": "पूर्व मेदिनीपुर"
+      },
+      "state": {
+        "en": "West Bengal",
+        "hi": "पश्चिम बंगाल"
+      },
+      "latitude": 21.55,
+      "longitude": 87.65
+    }
+  ]
+}

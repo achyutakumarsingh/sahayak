@@ -1,0 +1,37 @@
+{
+  "module": "disaster",
+  "title": "Disaster preparedness",
+  "status": "placeholder",
+  "note": "PLACEHOLDER CORPUS. Written to exercise the grounded-agent pattern, not to be relied on. Replace every entry with curated, sourced data before this module is shown to real users. The agent answers only from this file, so anything missing here is correctly refused.",
+  "last_reviewed": null,
+  "sources": [
+    "Placeholder — replace with NDMA and IMD guidance, properly cited"
+  ],
+  "entries": [
+    {
+      "id": "go-bag",
+      "topic": "What to keep ready before a warning",
+      "content": "Keep in one bag: drinking water, dry food, any regular medicines, a torch with spare cells, a power bank, and photocopies of identity documents in a plastic cover."
+    },
+    {
+      "id": "flood",
+      "topic": "During a flood",
+      "content": "Move to the highest floor or higher ground before water rises, not during. Do not walk or drive through moving water. Switch off the mains supply at the board before leaving if it is safe to reach."
+    },
+    {
+      "id": "cyclone",
+      "topic": "During a cyclone",
+      "content": "Stay indoors away from windows. Do not go outside during the calm of the eye; the wind returns from the opposite direction. Move to the designated cyclone shelter if told to by officials."
+    },
+    {
+      "id": "helplines",
+      "topic": "Emergency numbers in India",
+      "content": "The all-in-one emergency number in India is 112. NDRF (National Disaster Response Force) helpline is 011-24363260. The Indian Coast Guard number is 1554."
+    },
+    {
+      "id": "alerts-are-sample",
+      "topic": "About the alerts shown in this app",
+      "content": "The hazard alerts displayed in the Sahayak prototype are sample data for demonstration and are not live warnings. Real warnings come from IMD and the state disaster management authority."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "module": "vendors",
+  "title": "Running a small vending business",
+  "status": "placeholder",
+  "note": "PLACEHOLDER CORPUS. Written to exercise the grounded-agent pattern, not to be relied on. Replace every entry with curated, sourced data before this module is shown to real users. The agent answers only from this file, so anything missing here is correctly refused.",
+  "last_reviewed": null,
+  "sources": [
+    "Placeholder — replace with curated micro-enterprise guidance"
+  ],
+  "entries": [
+    {
+      "id": "daily-log",
+      "topic": "Keeping a daily record",
+      "content": "Write down what you paid for stock and what you took in, every day, on the same page. A week of honest records shows which items actually earn and which only look busy."
+    },
+    {
+      "id": "margin",
+      "topic": "Working out what you really earn",
+      "content": "Earnings on an item are the selling price minus what you paid for it, minus transport and any rent or fee for the day. Count spoilage of unsold perishable stock as a cost."
+    },
+    {
+      "id": "wastage",
+      "topic": "Reducing unsold stock",
+      "content": "For perishable goods, note how much is left unsold each day for two weeks. Order to the lower end of that range rather than the highest day, and add stock only when you sell out early."
+    }
+  ]
+}

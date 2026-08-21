@@ -120,6 +120,119 @@ curl http://localhost:8000/api/health
 Every route is currently a **stub** rendering the module name and its
 one-line description in both locales.
 
+## App shell
+
+`src/components/shell/` — one shell wraps every locale route.
+
+| Piece                | Notes                                                                 |
+| -------------------- | --------------------------------------------------------------------- |
+| `AppShell`           | Sidebar from `lg` up, compact top bar + bottom tabs below it           |
+| `Sidebar`            | All eight modules, language, accessibility, account                    |
+| `BottomNav`          | Home · Modules · More, with the modules and settings sheets            |
+| `Sheet`              | Mobile sheet built on `<dialog>` — the browser supplies modal semantics, focus trapping and Escape |
+| `ModuleNav`          | Shared link list, marks the current module with `aria-current="page"`  |
+| `AccessibilityMenu`  | The two persistent toggles                                             |
+| `AccountPanel`       | Session state and sign in / sign out                                   |
+
+**Mobile nav is three tabs, not eight.** At 360px, eight targets come out
+under the 44px minimum with labels too small to read. Modules live one tap
+away in a sheet that lists all eight, which keeps every target comfortably
+above the minimum.
+
+## Preferences and session
+
+Both live in `localStorage` and are read through `useSyncExternalStore`
+(`src/components/providers.tsx`), so React hydrates with the server snapshot
+and re-renders with the stored value — no mismatch, no `setState` in an
+effect, and two open tabs stay in step via the `storage` event.
+
+- **Large text** sets `data-text-size="large"` on `<html>`, which re-maps both
+  the type scale *and* the spacing tokens. Measured: body 15px → 19px, card
+  padding 20px → 26px. Scaling type without spacing would make the layout
+  tighter exactly for the reader who asked for more room.
+- **Voice mode** is a placeholder. It persists and shows a standing note that
+  speech is not connected yet, so the setting never implies a capability the
+  app does not have.
+- `PreferencesScript` re-applies both in `<head>` before first paint, so large
+  text does not flash in at the default size on every navigation.
+
+> **Storage keys live in `src/lib/storage.ts`, not in `providers.tsx`.** That
+> file is a `"use client"` module, and when a server component imports a plain
+> constant from one, Next hands back a client-reference proxy instead of the
+> value — the inline script shipped as
+> `localStorage.getItem(undefined)` and silently lost every saved preference
+> across navigations.
+
+## Sign-in stub
+
+`/{locale}/sign-in` — any 10-digit number and any 4–6 digit code creates a
+session. **No SMS is sent and no number is verified**; the session is
+`localStorage` only. The screen carries a `Disclaimer` saying exactly that, in
+both locales. Replace `SignInForm`'s `signIn(phone)` call with a real
+verification exchange when there is a backend for it.
+
+## Grounded agent pattern
+
+Every non-flagship module shares one endpoint and one component. What differs
+per module is a role line and a grounding file — not code.
+
+**Backend** — `POST /api/agent/{module}` with `{messages, language}`, replying
+as an SSE stream.
+
+```
+backend/
+├── grounding/{module}.json      curated corpus — the only source of truth
+└── app/
+    ├── routers/agent.py         the route, streaming, error mapping
+    ├── schemas/agent.py         request validation
+    └── services/
+        ├── grounding.py         loads + caches the corpus (.json or .md)
+        ├── prompts.py           per-module role line + the shared rules
+        └── claude.py            AsyncAnthropic client
+```
+
+`GET /api/agent/modules` lists which modules have a corpus and whether a key is
+configured.
+
+The system prompt tells the model to answer **only** from the corpus and to
+reply with a fixed refusal string otherwise, to answer in the requested
+language, and to keep to 40–80 words of plain, practical wording for readers
+with limited literacy. Requests run at `effort: "low"` — these are grounded
+lookups, not reasoning tasks — with `max_tokens` capped at 700.
+
+**Frontend** — drop `ChatPanel` into any module page with a slug:
+
+```tsx
+<ChatPanel module="fishermen" locale={locale} dict={dict} />
+```
+
+It renders the message list, streaming output, input, and a `Disclaimer` slot
+(default grounding disclaimer; override with `disclaimer`, or pass `null`).
+`src/lib/agent-stream.ts` reads the SSE body directly — `EventSource` cannot
+issue a POST.
+
+**Refusals are the feature, not a failure.** A module whose corpus does not
+cover a question must say so. `services` and `education` ship with
+*intentionally empty* corpora for exactly this reason: scheme records and NCERT
+excerpts have to be curated from official sources before those modules can
+answer anything, and until then refusing is the correct behaviour.
+
+> **Every grounding file is a placeholder.** Each carries
+> `"status": "placeholder"` and a note saying so. Replace them with curated,
+> sourced data before showing any module to real users.
+
+### Adding a module to the pattern
+
+1. Write `backend/grounding/<slug>.json`.
+2. Add a role line to `MODULE_ROLES` in `app/services/prompts.py`.
+3. Drop `<ChatPanel module="<slug>" … />` into the module page.
+
+### Testing the stream without a key
+
+`ANTHROPIC_BASE_URL` points the SDK at any Anthropic-compatible host, so the
+streaming path can be exercised against a local stub. Without a key the
+endpoint returns a 503 naming exactly what to set.
+
 ## Internationalisation
 
 Routes live under `src/app/[locale]/`, where `locale` is `en` or `hi`.
@@ -156,6 +269,7 @@ variables and re-theme at runtime.
 | `--border`     | `#E4E0D6` | `#2C2A24` | `border-border`   |
 | `--accent`     | `#CA4516` | `#FF7A45` | `text/bg-accent`  |
 | `--accent-ink` | `#FFFFFF` | `#14120F` | `text-accent-ink` |
+| `--accent-hover`| `#B33D13` | `#FF9064` | `bg-accent-hover` |
 
 `--text` and `--text-2` map to the `ink` / `ink-2` colour names in Tailwind so
 the utilities read `text-ink` rather than `text-text`. The CSS variables keep
@@ -176,9 +290,43 @@ coverage, so Hindi would otherwise fall back to a system face.
 Text + arrow is the default CTA; solid accent is reserved for the single
 primary action on a screen.
 
+**Hover glow.** Interactive surfaces — `Card interactive`, `Button` (both
+variants), module tiles — carry a cursor-tracking accent glow, the one place
+hover exceeds the flat rule. It is a radial gradient, not a shadow, and it
+never scales or transforms.
+
+- Opt in with `data-glow`: `"surface"` (accent tint), `"solid"` (accent-ink
+  tint, for a solid accent fill where an accent glow would be invisible), or
+  `"text"` (widens past a padding-less box without touching layout).
+- `PointerGlow` in the layout is a single delegated document listener that
+  writes `--mouse-x` / `--mouse-y`, batched into one `requestAnimationFrame`.
+  Using one listener instead of an `onMouseMove` per component keeps `Card`
+  and `Button` as server components shipping no JavaScript of their own.
+- Alpha rides in the colour through the `--accent-rgb` / `--accent-ink-rgb`
+  channel tokens: `rgb(var(--glow-rgb) / .15)`. `color-mix()` would need an
+  `@supports` fallback, and the fallback lightningcss emits **drops the
+  percentage entirely**, painting a full-strength accent blob over the content.
+- **Decorative and mouse-only.** Every state it dresses is also carried by a
+  border shift, an underline or a focus-visible outline. Coarse pointers,
+  high-contrast mode and `forced-colors` get no glow at all; reduced motion
+  drops the tracking and falls back to a flat 8% tint. Keyboard focus keeps its
+  outline and gets no glow.
+- Static cards and panels stay flat.
+
 **Accessibility modes.** `data-text-size="large"` and `data-contrast="high"` on
 `<html>` re-map the tokens globally, so the Persons with Disabilities module
 needs no per-component overrides.
+
+> **Layers matter.** The element resets (`*`, `html`, `body`, `::selection`,
+> the `:focus-visible` baseline) live inside `@layer base`. Unlayered, they
+> outrank *every* Tailwind utility regardless of specificity — which silently
+> killed `border-transparent`, `border-accent`, `border-warn/45` and `Card`'s
+> hover border shift. Keep new global element rules in `@layer base`.
+
+> **Dark Reader.** The locale layout sets `<meta name="darkreader-lock">`.
+> Sahayak ships its own light and dark themes; without the lock, the extension
+> re-colours the page on top of them and injects attributes into `<html>` that
+> cause a React hydration mismatch.
 
 ### Base components
 
@@ -186,8 +334,8 @@ needs no per-component overrides.
 
 | Component       | Notes                                                            |
 | --------------- | ---------------------------------------------------------------- |
-| `Card`          | Flat, 1px border, 8px radius. `tone` surface/sunken/bare, `interactive` for hover+focus-within |
-| `Button`        | `variant="primary"` (solid accent) or `"text"` (default, + arrow). Renders `<a>` when given `href` |
+| `Card`          | Flat, 1px border, 8px radius. `tone` surface/sunken/bare; `interactive` adds the border shift and the hover glow |
+| `Button`        | `variant="primary"` (solid accent, deepens on hover) or `"text"` (default, + arrow). Renders `<a>` when given `href` |
 | `SectionHeader` | Mono `/01` eyebrow + title, optional description and action slot  |
 | `StatusDot`     | Coloured dot + mono label. The label carries the meaning, not the colour |
 | `LanguageSwitch`| en/hi toggle; real links, works without JavaScript                |
