@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+backend/.venv/
+
+# Build output
+.next/
+out/
+dist/
+__pycache__/
+*.py[cod]
+
+# Environment
+.env
+.env.local
+.env*.local
+
+# Data
+*.db
+*.sqlite3
+
+# OS / editor
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+# TypeScript incremental build cache
+*.tsbuildinfo

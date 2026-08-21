@@ -1,0 +1,26 @@
+{
+  "name": "sahayak",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sahayak \u2014 AI for public good. Eight modules for underserved communities in India.",
+  "scripts": {
+    "setup": "npm run setup:frontend && npm run setup:backend && npm run setup:env",
+    "setup:frontend": "npm --prefix frontend install",
+    "setup:backend": "bash scripts/setup-backend.sh",
+    "setup:env": "cp -n backend/.env.example backend/.env || true && cp -n frontend/.env.local.example frontend/.env.local || true",
+    "dev": "concurrently --names \"web,api\" --prefix-colors \"cyan,magenta\" --kill-others-on-fail \"npm:dev:frontend\" \"npm:dev:backend\"",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "cd backend && .venv/bin/python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
+    "build": "npm --prefix frontend run build",
+    "start": "concurrently --names \"web,api\" --prefix-colors \"cyan,magenta\" \"npm --prefix frontend run start\" \"cd backend && .venv/bin/python -m uvicorn app.main:app --host 0.0.0.0 --port 8000\"",
+    "lint": "npm --prefix frontend run lint",
+    "typecheck": "cd frontend && npx tsc --noEmit",
+    "health": "curl -s http://localhost:8000/api/health"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,233 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Sahayak design tokens
+   Flat surfaces, 1px hairline borders (never box-shadow), mono reserved for
+   labels / metadata / numbers, text+arrow CTAs as the default button style.
+   --------------------------------------------------------------------------- */
+
+:root {
+  /* Surfaces */
+  --bg: #faf9f5;
+  --surface: #ffffff;
+  --surface-sunken: #f2f0e9;
+
+  /* Text */
+  --fg: #16160f;
+  --fg-muted: #575349;
+  --fg-subtle: #857f72;
+
+  /* Lines */
+  --hairline: #e0dcd0;
+  --hairline-strong: #c6c0b0;
+
+  /* Accent + status */
+  --accent: #1c6b47;
+  --accent-hover: #145136;
+  --accent-fg: #ffffff;
+  --accent-sunken: #e8f1ec;
+  --info: #1f5d8c;
+  --warn: #96590d;
+  --danger: #9d2f26;
+  --focus: #1c6b47;
+
+  /* Geometry — flat, minimal rounding */
+  --radius: 2px;
+  --hairline-width: 1px;
+
+  /* Type scale */
+  --step--1: 0.8125rem;
+  --step-0: 0.9375rem;
+  --step-1: 1.125rem;
+  --step-2: 1.5rem;
+  --step-3: 2rem;
+  --step-4: 2.75rem;
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur: 160ms;
+}
+
+/* Large-text mode (Accessibility module toggles this on <html>) */
+:root[data-text-size="large"] {
+  --step--1: 1rem;
+  --step-0: 1.1875rem;
+  --step-1: 1.4375rem;
+  --step-2: 1.875rem;
+  --step-3: 2.5rem;
+  --step-4: 3.25rem;
+}
+
+/* High-contrast mode (Accessibility module toggles this on <html>) */
+:root[data-contrast="high"] {
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-sunken: #f0f0f0;
+  --fg: #000000;
+  --fg-muted: #1a1a1a;
+  --fg-subtle: #333333;
+  --hairline: #000000;
+  --hairline-strong: #000000;
+  --accent: #00402a;
+  --accent-hover: #000000;
+  --accent-sunken: #e6efe9;
+  --info: #00325c;
+  --warn: #5c3300;
+  --danger: #7a0000;
+  --focus: #000000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-contrast="high"]) {
+    --bg: #12120f;
+    --surface: #191916;
+    --surface-sunken: #212120;
+    --fg: #f2f0e9;
+    --fg-muted: #b3aea1;
+    --fg-subtle: #8b8578;
+    --hairline: #2f2f2b;
+    --hairline-strong: #46453f;
+    --accent: #74c39b;
+    --accent-hover: #94d4b3;
+    --accent-fg: #08150f;
+    --accent-sunken: #16241d;
+    --info: #7db6e0;
+    --warn: #dda45f;
+    --danger: #e8867d;
+    --focus: #74c39b;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-sunken: var(--surface-sunken);
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-subtle: var(--fg-subtle);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-sunken: var(--accent-sunken);
+  --color-info: var(--info);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+
+  --radius-token: var(--radius);
+
+  --text-xs: var(--step--1);
+  --text-base: var(--step-0);
+  --text-lg: var(--step-1);
+  --text-xl: var(--step-2);
+  --text-2xl: var(--step-3);
+  --text-3xl: var(--step-4);
+
+  --font-sans: var(--font-inter), var(--font-devanagari), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+* {
+  border-color: var(--hairline);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent-sunken);
+  color: var(--fg);
+}
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@layer components {
+  /* Flat card — hairline border, no shadow, ever. */
+  .card {
+    background: var(--surface);
+    border: var(--hairline-width) solid var(--hairline);
+    border-radius: var(--radius);
+  }
+
+  /* Mono is reserved for labels, metadata and numbers. */
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  .meta {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--fg-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Default CTA: text + arrow, no filled pill. */
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5ch;
+    color: var(--accent);
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: var(--hairline-width) solid transparent;
+    transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+
+  .cta::after {
+    content: "→";
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .cta:hover {
+    color: var(--accent-hover);
+    border-bottom-color: currentColor;
+  }
+
+  .cta:hover::after {
+    transform: translateX(3px);
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 0.5rem;
+    top: -3rem;
+    z-index: 50;
+    background: var(--surface);
+    color: var(--fg);
+    border: var(--hairline-width) solid var(--hairline-strong);
+    padding: 0.5rem 0.875rem;
+    transition: top var(--dur) var(--ease);
+  }
+
+  .skip-link:focus {
+    top: 0.5rem;
+  }
+}

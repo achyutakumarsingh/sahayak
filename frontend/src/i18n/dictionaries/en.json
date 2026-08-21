@@ -1,0 +1,56 @@
+{
+  "app": {
+    "name": "Sahayak",
+    "tagline": "AI for public good — eight tools, built for the communities that need them most.",
+    "skipToContent": "Skip to main content",
+    "languageLabel": "Language",
+    "backToHome": "All modules",
+    "open": "Open"
+  },
+  "home": {
+    "eyebrow": "OOSC 4.0 · Problem statement 5",
+    "heading": "One platform. Eight communities.",
+    "intro": "Sahayak puts practical, offline-friendly AI in the hands of farmers, fishermen, artisans, vendors, students and citizens across India — in their own language.",
+    "modulesLabel": "Modules",
+    "moduleCount": "8 modules"
+  },
+  "status": {
+    "scaffold": "Scaffold",
+    "scaffoldNote": "Route stub — the module UI lands in a later commit.",
+    "flagship": "Flagship"
+  },
+  "modules": {
+    "farmers": {
+      "name": "Farmers",
+      "description": "Diagnose crop disease from a photo, then get grounded treatment advice, mandi prices and weather-aware sowing tips."
+    },
+    "fishermen": {
+      "name": "Fishermen",
+      "description": "Live sea conditions — wave height, wind and swell — turned into a plain-language go / no-go safety verdict."
+    },
+    "artisans": {
+      "name": "Artisans & Small Producers",
+      "description": "Photograph a product and get a listing title, description, fair price band and tags in your own language."
+    },
+    "vendors": {
+      "name": "Micro-Entrepreneurs & Vendors",
+      "description": "A daily demand and inventory note, a simple income–expense log, and a matcher for schemes you qualify for."
+    },
+    "services": {
+      "name": "Public Services Navigator",
+      "description": "Ask in plain language and find out which government schemes you are eligible for, grounded in curated official data."
+    },
+    "accessibility": {
+      "name": "Persons with Disabilities",
+      "description": "Voice-first navigation plus large-text and high-contrast modes that carry across every module in Sahayak."
+    },
+    "education": {
+      "name": "Rural Education",
+      "description": "A patient doubt-solving tutor grounded on real NCERT chapter excerpts, with a citation for every answer."
+    },
+    "disaster": {
+      "name": "Disaster & Climate Resilience",
+      "description": "Hazard alerts for your district and an AI-generated preparedness checklist tailored to the threat."
+    }
+  }
+}
