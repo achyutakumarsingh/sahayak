@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ChatPanel } from "@/components/chat-panel";
+import { SeaConditions } from "@/components/modules/sea-conditions";
 import { SectionHeader, StatusDot } from "@/components/ui";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -38,20 +39,23 @@ export default async function Page({
   const index = modules.findIndex((m) => m.slug === SLUG) + 1;
 
   return (
-    <article className="mx-auto max-w-3xl px-5 py-10 sm:py-12">
+    <article className="mx-auto max-w-4xl px-5 py-10 sm:py-12 flex flex-col gap-8">
       <SectionHeader
         as="h1"
         index={index}
         eyebrow={copy.community}
         title={copy.name}
         description={copy.description}
-        action={<StatusDot tone="warn" label={dict.status.scaffold} />}
+        action={<StatusDot tone="ok" label="Active" />}
       />
 
-      {/* The whole grounded-agent surface: one component, one module id. */}
-      <ChatPanel module={SLUG} locale={locale} dict={dict} className="mt-8" />
+      {/* Replaces the earlier SafetyMeter: that one labelled itself "LIVE FEED"
+          while its numbers came from sliders, with no network call. */}
+      <SeaConditions locale={locale} dict={dict} />
 
-      <p className="meta mt-6">{def.monogram} · grounding/{SLUG}.json</p>
+      <ChatPanel module={SLUG} locale={locale} dict={dict} />
+
+      <p className="meta">{def.monogram} · grounding/{SLUG}.json</p>
     </article>
   );
 }

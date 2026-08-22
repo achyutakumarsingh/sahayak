@@ -35,3 +35,27 @@ def get_client() -> AsyncAnthropic:
     if settings.anthropic_base_url:
         kwargs["base_url"] = settings.anthropic_base_url
     return AsyncAnthropic(**kwargs)
+
+
+async def complete_structured(
+    *,
+    system: str,
+    user: str | list,
+    output_format: type,
+    max_tokens: int = 700,
+):
+    """One non-streaming call returning a validated Pydantic model.
+
+    Used where the frontend needs a machine-readable field (a verdict level
+    that picks a colour, a price band) rather than a wall of prose.
+    """
+    settings = get_settings()
+    response = await get_client().messages.parse(
+        model=settings.anthropic_model,
+        max_tokens=max_tokens,
+        system=system,
+        messages=[{"role": "user", "content": user}],  # str or content blocks
+        output_format=output_format,
+        output_config={"effort": settings.anthropic_effort},
+    )
+    return response.parsed_output

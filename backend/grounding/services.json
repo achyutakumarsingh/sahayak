@@ -17,6 +17,116 @@
       "id": "where-to-check",
       "topic": "Where to verify a scheme",
       "content": "The national scheme directory is myScheme (myscheme.gov.in). A Common Service Centre (CSC) or the relevant department office can confirm eligibility and the current document list in person."
+    },
+    {
+      "id": "sample-schemes-note",
+      "topic": "About the scheme records in this file",
+      "content": "The schemes listed in this file are SAMPLE records with generic names. They do not describe any real government programme and their eligibility rules are illustrative. Do not quote them as fact. Replace them with verified records from official sources before this module is used."
+    }
+  ],
+  "schemes": [
+    {
+      "id": "sample-vendor-credit",
+      "verified": false,
+      "name": {
+        "en": "Sample scheme A — vendor working-capital loan",
+        "hi": "नमूना योजना A — विक्रेता कार्यशील पूँजी ऋण"
+      },
+      "summary": {
+        "en": "A small collateral-free working-capital loan for street vendors with a vending certificate.",
+        "hi": "वेंडिंग प्रमाणपत्र रखने वाले रेहड़ी-पटरी विक्रेताओं के लिए बिना गारंटी छोटा कार्यशील पूँजी ऋण।"
+      },
+      "criteria": {
+        "occupations": [
+          "vendor"
+        ],
+        "max_annual_income_inr": 300000,
+        "min_age": 18,
+        "max_age": 65,
+        "requires_vending_certificate": true
+      },
+      "documents": {
+        "en": [
+          "Aadhaar",
+          "Vending certificate",
+          "Bank passbook"
+        ],
+        "hi": [
+          "आधार",
+          "वेंडिंग प्रमाणपत्र",
+          "बैंक पासबुक"
+        ]
+      }
+    },
+    {
+      "id": "sample-artisan-toolkit",
+      "verified": false,
+      "name": {
+        "en": "Sample scheme B — artisan toolkit grant",
+        "hi": "नमूना योजना B — कारीगर औज़ार अनुदान"
+      },
+      "summary": {
+        "en": "A one-time grant toward tools for registered artisans and home producers.",
+        "hi": "पंजीकृत कारीगरों और घरेलू उत्पादकों के लिए औज़ारों हेतु एकमुश्त अनुदान।"
+      },
+      "criteria": {
+        "occupations": [
+          "artisan"
+        ],
+        "max_annual_income_inr": 250000,
+        "min_age": 18,
+        "max_age": 70,
+        "requires_vending_certificate": false
+      },
+      "documents": {
+        "en": [
+          "Aadhaar",
+          "Artisan registration",
+          "Bank passbook"
+        ],
+        "hi": [
+          "आधार",
+          "कारीगर पंजीकरण",
+          "बैंक पासबुक"
+        ]
+      }
+    },
+    {
+      "id": "sample-women-enterprise",
+      "verified": false,
+      "name": {
+        "en": "Sample scheme C — women's micro-enterprise support",
+        "hi": "नमूना योजना C — महिला सूक्ष्म उद्यम सहायता"
+      },
+      "summary": {
+        "en": "Interest subsidy for micro-enterprises run by women.",
+        "hi": "महिलाओं द्वारा चलाए जा रहे सूक्ष्म उद्यमों के लिए ब्याज सब्सिडी।"
+      },
+      "criteria": {
+        "occupations": [
+          "vendor",
+          "artisan"
+        ],
+        "genders": [
+          "female"
+        ],
+        "max_annual_income_inr": 400000,
+        "min_age": 18,
+        "max_age": 60,
+        "requires_vending_certificate": false
+      },
+      "documents": {
+        "en": [
+          "Aadhaar",
+          "Bank passbook",
+          "Enterprise proof"
+        ],
+        "hi": [
+          "आधार",
+          "बैंक पासबुक",
+          "उद्यम प्रमाण"
+        ]
+      }
     }
   ]
 }

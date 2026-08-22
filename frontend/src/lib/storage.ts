@@ -9,3 +9,6 @@
  */
 export const PREFERENCES_KEY = "sahayak.preferences";
 export const SESSION_KEY = "sahayak.session";
+
+/** Vendor daily log. Stays on the device; only the recent window is ever sent. */
+export const VENDOR_LOG_KEY = "sahayak.vendorLog";
