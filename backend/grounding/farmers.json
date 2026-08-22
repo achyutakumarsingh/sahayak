@@ -1,0 +1,32 @@
+{
+  "module": "farmers",
+  "title": "Crop disease management",
+  "status": "placeholder",
+  "note": "PLACEHOLDER CORPUS. The agent answers only from this file. Replace every entry with curated guidance reviewed by an agronomist before this module is shown to real farmers — treatment advice is medical-adjacent for crops and a wrong spray costs a season.",
+  "last_reviewed": null,
+  "sources": [
+    "Placeholder — replace with ICAR / state agriculture university guidance, properly cited"
+  ],
+  "entries": [
+    {
+      "id": "confirm-first",
+      "topic": "Confirming a diagnosis",
+      "content": "A photograph alone cannot confirm a crop disease. Symptoms of different diseases, nutrient deficiency and pesticide burn look alike. Confirm with the local Krishi Vigyan Kendra (KVK) or an agriculture extension officer before spraying anything."
+    },
+    {
+      "id": "kisan-helpline",
+      "topic": "Who to ask",
+      "content": "The Kisan Call Centre helpline in India is 1800-180-1551, free, in regional languages. Every district has a Krishi Vigyan Kendra that can inspect a crop in person."
+    },
+    {
+      "id": "spray-safety",
+      "topic": "General spraying safety",
+      "content": "Read the label on any product before use. Wear a mask, gloves and full sleeves. Do not spray in strong wind or just before rain. Observe the pre-harvest interval printed on the label."
+    },
+    {
+      "id": "no-dosage",
+      "topic": "Dosages and product names",
+      "content": "This dataset does not carry product names, brand names, dosages or mixing ratios. Those depend on the crop, the growth stage, local regulation and the specific product, and must come from the label and an extension officer — never from a photograph."
+    }
+  ]
+}

@@ -10,7 +10,7 @@ python-multipart==0.0.32
 anthropic==1.0.0
 httpx==0.28.1
 
-# --- Crop-disease classifier (uncomment with the Farmers module) --------
-# onnxruntime
-# pillow
-# numpy
+# --- Crop-disease classifier (Farmers module) ---------------------------
+onnxruntime==1.29.0
+pillow==12.3.0
+numpy==2.5.2

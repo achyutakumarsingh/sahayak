@@ -28,6 +28,14 @@ class Settings(BaseSettings):
     # Override to point the SDK at a local stub instead of the real API.
     anthropic_base_url: Optional[str] = None
 
+    # data.gov.in mandi prices. Defaults to the rate-limited sample key that
+    # data.gov.in publishes in its own API documentation; replace it with your
+    # own free key for anything beyond a demo.
+    data_gov_in_api_key: str = "579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b"
+
+    # Path to the trained crop-disease classifier, relative to backend/.
+    crop_model_path: str = "models/crop_disease.onnx"
+
     # Prototype storage. Swap for a Postgres DSN when the round allows.
     database_url: str = "sqlite:///./sahayak.db"
 
