@@ -18,13 +18,21 @@ export default async function HomePage({
   const dict = await getDictionary(locale);
 
   return (
-    <div className="mx-auto max-w-5xl px-5 py-10 sm:py-12">
+    <div className="px-5 py-12 sm:py-16 lg:pl-[12vw] xl:pl-[190px] lg:pr-16 lg:pt-[140px] xl:pt-[190px] lg:pb-24 max-w-7xl">
       {/* Hero. Left-aligned, and the only thing above the grid — the size jump
           against unchanged body copy is what carries it. */}
       <Reveal>
         <p className="label">{dict.home.eyebrow}</p>
-        <h1 className="display mt-5 max-w-[19ch] text-[length:var(--text-hero)] text-ink">
-          {dict.home.hero}
+        <h1 className="display mt-5 max-w-[20ch] text-[length:var(--text-hero)] text-ink">
+          {Array.isArray(dict.home.hero) ? (
+            <>
+              {dict.home.hero[0]}<br />
+              {dict.home.hero[1]}<br />
+              <span className="text-accent">{dict.home.hero[2]}</span>
+            </>
+          ) : (
+            dict.home.hero
+          )}
         </h1>
       </Reveal>
       <Reveal delay={80}>
@@ -39,7 +47,7 @@ export default async function HomePage({
           action={<span className="meta">{dict.home.moduleCount}</span>}
         />
 
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {modules.map((module, index) => (
             <Reveal
               key={module.slug}

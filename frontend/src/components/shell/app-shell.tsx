@@ -29,29 +29,31 @@ export function AppShell({
         {dict.app.skipToContent}
       </a>
 
-      {/* Compact top bar — mobile and desktop search header */}
-      <header className="sticky top-0 z-30 border-b border-border bg-surface">
-        <div className="flex items-center justify-between gap-4 px-4 py-3">
-          <Link href={localePath(locale)} className="flex items-baseline gap-2 no-underline lg:hidden">
-            <span className="text-lg font-semibold tracking-tight text-ink">
-              {dict.app.name}
-            </span>
-          </Link>
-
-          <div className="flex items-center gap-3 ml-auto">
-            <CommandPalette locale={locale} dict={dict} />
-            <LanguageSwitch locale={locale} label={dict.app.languageLabel} compact />
-          </div>
-        </div>
-      </header>
-
-      <div className="hidden w-72 shrink-0 lg:block">
+      <div className="hidden w-[260px] shrink-0 lg:block">
         <div className="sticky top-0 h-dvh">
           <Sidebar locale={locale} dict={dict} />
         </div>
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col relative">
+        {/* Compact top bar — mobile and desktop search header */}
+        <header className="sticky top-0 z-30 lg:absolute lg:top-0 lg:right-0 lg:w-full lg:bg-transparent border-b border-border lg:border-none bg-surface pointer-events-none">
+          <div className="flex items-center justify-between gap-4 px-4 py-3 lg:px-8 lg:py-6">
+            <Link href={localePath(locale)} className="flex items-baseline gap-2 no-underline lg:hidden pointer-events-auto">
+              <span className="text-lg font-semibold tracking-tight text-ink">
+                {dict.app.name}
+              </span>
+            </Link>
+
+            <div className="flex items-center gap-3 ml-auto pointer-events-auto">
+              <CommandPalette locale={locale} dict={dict} />
+              <div className="lg:hidden">
+                <LanguageSwitch locale={locale} label={dict.app.languageLabel} compact />
+              </div>
+            </div>
+          </div>
+        </header>
+
         <main id="main" tabIndex={-1} className="flex-1 outline-none">
           {children}
         </main>

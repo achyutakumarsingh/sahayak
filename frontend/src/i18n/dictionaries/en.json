@@ -24,7 +24,11 @@
     "moduleCount": "8 modules",
     "communityLabel": "Serves",
     "browseAll": "Browse all eight modules",
-    "hero": "One trained model. Eight communities. Grounded answers, or none at all."
+    "hero": [
+      "One trained model.",
+      "Eight communities.",
+      "Grounded answers, or none at all."
+    ]
   },
   "status": {
     "scaffold": "Scaffold",
