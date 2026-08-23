@@ -33,7 +33,16 @@ type Payload = {
   usingSampleKey: boolean;
 };
 
-const COMMODITIES = ["Wheat", "Paddy(Dhan)(Common)", "Cotton", "Potato", "Onion", "Tomato", "Maize"];
+const COMMODITIES = [
+  { value: "Wheat", label: "Wheat · गेहूँ" },
+  { value: "Rice", label: "Rice · चावल" },
+  { value: "Paddy(Dhan)(Common)", label: "Paddy / Dhan · धान" },
+  { value: "Cotton", label: "Cotton · कपास" },
+  { value: "Potato", label: "Potato · आलू" },
+  { value: "Onion", label: "Onion · प्याज़" },
+  { value: "Tomato", label: "Tomato · टमाटर" },
+  { value: "Maize", label: "Maize · मक्का" },
+];
 
 const FIELD =
   "rounded-chip border border-border bg-surface px-3 py-2 text-ink " +
@@ -113,8 +122,8 @@ export function MandiPrices({ dict }: { dict: Dictionary }) {
             className={FIELD}
           >
             {COMMODITIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
+              <option key={c.value} value={c.value}>
+                {c.label}
               </option>
             ))}
           </select>

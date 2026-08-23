@@ -57,10 +57,18 @@ async def mandi(
 ) -> dict:
     try:
         return await fetch_prices(commodity=commodity, state=state, limit=limit)
-    except MandiRateLimited as exc:
-        raise HTTPException(status_code=429, detail=str(exc))
-    except MandiUnavailable as exc:
-        raise HTTPException(status_code=502, detail=f"Could not reach data.gov.in: {exc}")
+    except Exception as exc:
+        logger.warning("mandi fetch failed: %s", exc)
+        from app.services.mandi import _filter_fallback
+        fallback_records = _filter_fallback(commodity=commodity, state=state, limit=limit)
+        return {
+            "records": fallback_records,
+            "count": len(fallback_records),
+            "unit": "₹ per quintal",
+            "source": "Agmarknet (Government APMC Mandi Rates)",
+            "isFallback": True,
+            "usingSampleKey": False,
+        }
 
 
 @router.post("/diagnose", summary="Classify a crop photo with the trained model")
