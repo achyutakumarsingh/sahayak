@@ -1,7 +1,6 @@
 """Sea-conditions dashboard for the Fishermen module.
 
-The readings and the verdict are deliberately separate calls: the numbers come
-from Open-Meteo and are always available, while the verdict needs an LLM key.
+from Open-Meteo and are always available, while the verdict needs an AI service key.
 A crew with no key still sees the real data.
 """
 
@@ -11,7 +10,7 @@ from typing import Literal, Optional
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 
-from app.services.claude import complete_structured, has_api_key
+from app.services.llm import LLMAuthError, LLMError, complete_structured, has_api_key
 from app.services.grounding import load_grounding
 from app.services.marine import UpstreamError, fetch_conditions, find_district, districts
 from app.services.prompts import build_system_prompt
@@ -68,7 +67,7 @@ async def verdict(request: VerdictRequest) -> dict:
     if not has_api_key():
         raise HTTPException(
             status_code=503,
-            detail="LLM API key is not set, so the verdict cannot be generated. The readings above are live.",
+            detail="GEMINI_API_KEY is not set, so the verdict cannot be generated. The readings above are live.",
         )
 
     # Same grounding as the chat: the thresholds the model reasons with are the
@@ -91,8 +90,10 @@ async def verdict(request: VerdictRequest) -> dict:
         parsed: Verdict = await complete_structured(
             system=system, user=user, output_format=Verdict
         )
-    except Exception as exc:
+    except LLMAuthError:
+        raise HTTPException(status_code=502, detail="The AI service rejected the API key.")
+    except LLMError as exc:
         logger.exception("Verdict generation failed")
-        raise HTTPException(status_code=502, detail=f"LLM verdict generation failed: {exc}")
+        raise HTTPException(status_code=502, detail=str(exc))
 
     return {"readings": readings, "verdict": parsed.model_dump()}

@@ -1,11 +1,11 @@
 {
   "module": "disaster",
   "title": "Disaster preparedness",
-  "status": "placeholder",
-  "note": "PLACEHOLDER CORPUS. Written to exercise the grounded-agent pattern, not to be relied on. Replace every entry with curated, sourced data before this module is shown to real users. The agent answers only from this file, so anything missing here is correctly refused.",
+  "status": "sample",
+  "note": "SAMPLE DATA. Written to exercise the grounded-agent pattern for a demo. Every entry here is illustrative and has not been reviewed by a subject expert. Replace with curated, sourced records before this module is shown to real users. The agent answers only from this file, so anything missing here is correctly refused.",
   "last_reviewed": null,
   "sources": [
-    "Placeholder — replace with NDMA and IMD guidance, properly cited"
+    "SAMPLE — replace with NDMA and IMD guidance, properly cited"
   ],
   "entries": [
     {
@@ -32,6 +32,21 @@
       "id": "alerts-are-sample",
       "topic": "About the alerts shown in this app",
       "content": "The hazard alerts displayed in the Sahayak prototype are sample data for demonstration and are not live warnings. Real warnings come from IMD and the state disaster management authority."
+    },
+    {
+      "id": "heatwave",
+      "topic": "During a heatwave",
+      "content": "Stay indoors between 12 noon and 3 pm. Drink water often even when not thirsty. Wear light, loose cotton clothing and cover your head outdoors. Watch for dizziness, headache and a stopped sweat — those need medical help at once."
+    },
+    {
+      "id": "after-flood-water",
+      "topic": "Drinking water after a flood",
+      "content": "Treat all flood-contaminated water as unsafe. Boil water for at least one minute at a rolling boil before drinking, or use chlorine tablets as directed on the packet. Do not use flood water for washing food or utensils."
+    },
+    {
+      "id": "warning-sources",
+      "topic": "Where real warnings come from",
+      "content": "Official warnings for India come from the India Meteorological Department (IMD) and the state disaster management authority. The alerts displayed in this prototype are sample data, not live warnings."
     }
   ]
 }

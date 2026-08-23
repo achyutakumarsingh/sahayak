@@ -8,7 +8,8 @@ from typing import List
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from app.services.claude import complete_structured, get_active_model, has_api_key
+from app.config import get_settings
+from app.services.llm import LLMAuthError, LLMError, complete_structured, has_api_key
 from app.services.grounding import load_grounding
 from app.services.prompts import build_listing_prompt
 
@@ -61,8 +62,8 @@ async def listing(request: ListingRequest) -> dict:
         raise HTTPException(
             status_code=503,
             detail=(
-                "LLM API key is not set. Add GEMINI_API_KEY (or ANTHROPIC_API_KEY) "
-                "to backend/.env and restart the backend."
+                "GEMINI_API_KEY is not set, so a listing cannot be generated. "
+                "Add a real key to backend/.env and restart the backend."
             ),
         )
 
@@ -91,8 +92,10 @@ async def listing(request: ListingRequest) -> dict:
         parsed: Listing = await complete_structured(
             system=system, user=content, output_format=Listing, max_tokens=1400
         )
-    except Exception as exc:
+    except LLMAuthError:
+        raise HTTPException(status_code=502, detail="The AI service rejected the API key.")
+    except LLMError as exc:
         logger.exception("Listing generation failed")
-        raise HTTPException(status_code=502, detail=f"LLM generation failed: {exc}")
+        raise HTTPException(status_code=502, detail=str(exc))
 
-    return {"listing": parsed.model_dump(), "model": get_active_model()}
+    return {"listing": parsed.model_dump(), "model": get_settings().gemini_model}

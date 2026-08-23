@@ -13,7 +13,7 @@ from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 
 from app.services.classifier import ModelUnavailable, classify, is_available, model_path
-from app.services.claude import complete_structured, has_api_key
+from app.services.llm import LLMAuthError, LLMError, complete_structured, has_api_key
 from app.services.grounding import load_grounding
 from app.services.mandi import MandiRateLimited, MandiUnavailable, fetch_prices
 from app.services.prompts import build_system_prompt

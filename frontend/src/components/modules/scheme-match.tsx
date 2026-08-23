@@ -146,6 +146,10 @@ export function SchemeMatch({ locale, dict }: { locale: Locale; dict: Dictionary
                       <p className="meta mt-2">
                         {t.documents}: {(scheme.documents?.[locale] ?? scheme.documents?.en ?? []).join(" · ")}
                       </p>
+                      {/* Deterministic match, so the exact record is citable. */}
+                      <p className="meta mt-1 text-subtle">
+                        {dict.chat.source}: {result.source} · {scheme.id}
+                      </p>
                     </li>
                   ))}
                 </ul>

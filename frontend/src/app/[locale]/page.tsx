@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { HeroStats } from "@/components/hero-stats";
 import { ImpactStrip } from "@/components/impact-strip";
 import { Reveal } from "@/components/reveal";
 import { ModuleCard } from "@/components/module-card";
@@ -24,19 +25,13 @@ export default async function HomePage({
       <Reveal>
         <p className="label">{dict.home.eyebrow}</p>
         <h1 className="display mt-5 max-w-[20ch] text-[length:var(--text-hero)] text-ink">
-          {Array.isArray(dict.home.hero) ? (
-            <>
-              {dict.home.hero[0]}<br />
-              {dict.home.hero[1]}<br />
-              <span className="text-accent">{dict.home.hero[2]}</span>
-            </>
-          ) : (
-            dict.home.hero
-          )}
+          {dict.home.heroLead ?? (Array.isArray(dict.home.hero) ? `${dict.home.hero[0]} ${dict.home.hero[1]} ` : "One trained model. Eight communities. ")}
+          <span className="text-accent">{dict.home.heroAccent ?? (Array.isArray(dict.home.hero) ? dict.home.hero[2] : "Grounded answers, or none at all.")}</span>
         </h1>
       </Reveal>
       <Reveal delay={80}>
         <p className="mt-8 max-w-2xl text-lg text-ink-2">{dict.home.intro}</p>
+        <HeroStats dict={dict} />
       </Reveal>
 
       <section aria-labelledby="modules-heading" className="mt-16 sm:mt-20">

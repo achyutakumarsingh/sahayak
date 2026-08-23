@@ -17,6 +17,8 @@ export { PREFERENCES_KEY, SESSION_KEY } from "@/lib/storage";
 export type Preferences = {
   largeText: boolean;
   voiceMode: boolean;
+  /** Demo switch: pretend there is no network and replay cached answers. */
+  offlineMode: boolean;
 };
 
 /** The phone-number login stub. Never leaves this browser. */
@@ -25,7 +27,11 @@ export type Session = {
   signedInAt: string;
 };
 
-const DEFAULT_PREFERENCES: Preferences = { largeText: false, voiceMode: false };
+const DEFAULT_PREFERENCES: Preferences = {
+  largeText: false,
+  voiceMode: false,
+  offlineMode: false,
+};
 
 type Snapshot = {
   preferences: Preferences;
@@ -152,6 +158,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
 
     if (preferences.voiceMode) root.dataset.voice = "on";
     else delete root.dataset.voice;
+
+    if (preferences.offlineMode) root.dataset.offline = "on";
+    else delete root.dataset.offline;
   }, [preferences]);
 
   const setPreference = useCallback<PreferencesValue["setPreference"]>(

@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 
-import { Button, Card, Disclaimer } from "@/components/ui";
+import { usePreferences } from "@/components/providers";
+import { Button, Card, Disclaimer, StatusDot } from "@/components/ui";
 import { MicIcon, SpeakerIcon } from "@/components/ui/icons";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
-import { streamAgent, type ChatMessage } from "@/lib/agent-stream";
+import { splitSource, streamAgent, type ChatMessage } from "@/lib/agent-stream";
 import { cn } from "@/lib/cn";
 
 /** Minimal shape of the Web Speech API we rely on; it is not in lib.dom. */
@@ -48,6 +49,8 @@ export function ChatPanel({
   className,
 }: ChatPanelProps) {
   const t = dict.chat;
+  const { preferences } = usePreferences();
+  const offline = preferences.offlineMode;
   const starters =
     suggestions ??
     (t.suggestions as Record<string, string[] | undefined>)[module] ??
@@ -60,6 +63,7 @@ export function ChatPanel({
   const [speakingId, setSpeakingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const askedForDemo = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
 
@@ -161,6 +165,7 @@ export function ChatPanel({
           messages: history,
           language: locale,
           signal: controller.signal,
+          offline,
         })) {
           if (event.type === "delta") {
             setMessages((prev) =>
@@ -170,9 +175,11 @@ export function ChatPanel({
             );
           } else if (event.type === "error") {
             setError(
-              event.code === "not_configured"
-                ? t.errorNotConfigured
-                : event.message || t.errorGeneric,
+              event.code === "offline_miss"
+                ? t.offlineMiss
+                : event.code === "not_configured"
+                  ? t.errorNotConfigured
+                  : event.message || t.errorGeneric,
             );
           }
         }
@@ -188,8 +195,28 @@ export function ChatPanel({
         );
       }
     },
-    [messages, module, locale, streaming, t],
+    [messages, module, locale, streaming, t, offline],
   );
+
+  // Demo Mode: ask the module's first starter question for real.
+  //
+  // Scheduled rather than fired inline, and cancelled on cleanup. React's
+  // StrictMode mounts, unmounts and remounts in development: firing inline
+  // meant the first send was aborted by the unmount cleanup while the ref
+  // guard — which survives the remount — blocked the retry, so the question
+  // was asked and no answer ever arrived.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("demo") !== "ask") return;
+    if (askedForDemo.current || starters.length === 0) return;
+
+    const timer = window.setTimeout(() => {
+      askedForDemo.current = true;
+      void send(starters[0]);
+    }, 200);
+
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [starters, send]);
 
   function onSubmit(event: FormEvent) {
     event.preventDefault();
@@ -203,6 +230,11 @@ export function ChatPanel({
           {t.title}
         </h2>
         <p className="mt-1 text-ink-2">{t.intro}</p>
+        {offline ? (
+          <p className="mt-2">
+            <StatusDot tone="warn" label={t.offlineBadge} />
+          </p>
+        ) : null}
       </div>
 
       {disclaimer === undefined ? (
@@ -222,7 +254,17 @@ export function ChatPanel({
           {messages.length === 0 ? (
             <p className="text-ink-2">{t.empty}</p>
           ) : (
-            messages.map((message) => (
+            messages.map((message) => {
+              // The grounded prompt ends each answer with a SOURCE line. Split
+              // it once here so the body is what gets rendered AND what gets
+              // read aloud — otherwise text-to-speech announces "SOURCE: ..."
+              const isAssistant = message.role === "assistant";
+              const { body, source } = isAssistant
+                ? splitSource(message.content)
+                : { body: message.content, source: null };
+              const settled = isAssistant && !streaming && body.length > 0;
+
+              return (
               <div key={message.id} className="flex flex-col gap-1 group">
                 <div className="flex items-center justify-between gap-2">
                   <span className="label">
@@ -231,7 +273,7 @@ export function ChatPanel({
                   {message.role === "assistant" && message.content ? (
                     <button
                       type="button"
-                      onClick={() => speakMessage(message.id, message.content)}
+                      onClick={() => speakMessage(message.id, body)}
                       className={cn(
                         "inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-chip border transition-colors",
                         speakingId === message.id
@@ -248,19 +290,26 @@ export function ChatPanel({
                 <p
                   className={cn(
                     "whitespace-pre-wrap",
-                    message.role === "user" ? "text-ink" : "text-ink-2",
+                    isAssistant ? "text-ink-2" : "text-ink",
                   )}
                 >
-                  {message.content}
+                  {body}
                   {streaming && message.content === "" ? (
                     <span className="flex flex-col gap-2 py-2">
-                      <span className="h-3 w-48 rounded bg-border animate-pulse inline-block" />
-                      <span className="h-3 w-36 rounded bg-border animate-pulse inline-block" />
+                      <span className="inline-block h-3 w-48 animate-pulse rounded bg-border" />
+                      <span className="inline-block h-3 w-36 animate-pulse rounded bg-border" />
                     </span>
                   ) : null}
                 </p>
+
+                {settled ? (
+                  <p className="meta mt-1.5 text-subtle">
+                    {t.source}: {source ?? `grounding/${module}.json`}
+                  </p>
+                ) : null}
               </div>
-            ))
+              );
+            })
           )}
           <div ref={logEndRef} />
         </div>

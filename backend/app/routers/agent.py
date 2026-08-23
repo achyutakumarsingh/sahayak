@@ -14,7 +14,13 @@ from fastapi.responses import StreamingResponse
 
 from app.config import get_settings
 from app.schemas.agent import AgentRequest
-from app.services.claude import has_api_key, stream_completion
+from app.services.llm import (
+    LLMAuthError,
+    LLMError,
+    LLMRateLimited,
+    has_api_key,
+    stream_text,
+)
 from app.services.grounding import GroundingNotFound, available_modules, load_grounding
 from app.services.prompts import build_system_prompt
 from app.services.usage import bump
@@ -60,8 +66,9 @@ async def ask(
         raise HTTPException(
             status_code=503,
             detail=(
-                "LLM API key is not set. Add GEMINI_API_KEY (or ANTHROPIC_API_KEY) "
-                "to backend/.env and restart the backend."
+                "GEMINI_API_KEY is not set. Add a real key to backend/.env "
+                "and restart the backend. Get one at "
+                "https://aistudio.google.com/apikey"
             ),
         )
 
@@ -71,16 +78,25 @@ async def ask(
 
     async def event_stream() -> AsyncIterator[str]:
         try:
-            async for event in stream_completion(
-                system=system,
-                messages=messages,
-                max_tokens=settings.anthropic_max_tokens,
-            ):
-                yield sse(event)
-                if event.get("type") == "done":
-                    # Counted on completion, not on request, so an aborted or
-                    # failed stream is not recorded as an answered question.
-                    await bump("questions")
+            answer_started = False
+            async for text in stream_text(system=system, messages=messages):
+                answer_started = True
+                yield sse({"type": "delta", "text": text})
+
+            # Counted on completion, not on request, so an aborted or failed
+            # stream is not recorded as an answered question.
+            if answer_started:
+                await bump("questions")
+
+            yield sse({"type": "done", "model": settings.gemini_model})
+
+        except LLMAuthError:
+            yield sse({"type": "error", "code": "auth", "message": "The AI service rejected the API key."})
+        except LLMRateLimited:
+            yield sse({"type": "error", "code": "rate_limit", "message": "Too many requests just now. Try again shortly."})
+        except LLMError as exc:
+            logger.exception("AI service error for module %s", module)
+            yield sse({"type": "error", "code": "upstream", "message": str(exc)})
         except Exception:
             logger.exception("Unexpected failure streaming module %s", module)
             yield sse({"type": "error", "code": "unknown", "message": "Something went wrong generating the answer."})

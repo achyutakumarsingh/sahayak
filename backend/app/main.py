@@ -1,4 +1,4 @@
-"""Sahayak backend — Claude orchestration layer and the ONNX crop-disease model.
+"""Sahayak backend — LLM orchestration layer and the ONNX crop-disease model.
 
 Only the health route exists so far; the module routers land alongside their
 frontend screens.

@@ -41,20 +41,31 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
   const t = dict.farmer;
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const [modelReady, setModelReady] = useState<boolean | null>(null);
+  // null = not asked yet, "missing" = server says no model, "unreachable" =
+  // could not ask. Collapsing the last two into one flag made the screen claim
+  // "no trained model installed" whenever the backend was simply down, which
+  // is a different problem with a different fix.
+  const [modelState, setModelState] = useState<"unknown" | "ready" | "missing" | "unreachable">(
+    "unknown",
+  );
   const [preview, setPreview] = useState<string | null>(null);
   const [payload, setPayload] = useState<{ base64: string; mediaType: string } | null>(null);
   const [result, setResult] = useState<Result | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [flag, setFlag] = useState<FlagState>("idle");
+  const [autoRun, setAutoRun] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
     fetch(apiUrl("/api/farmers/model-status"), { signal: controller.signal })
       .then((r) => r.json())
-      .then((body: { available: boolean }) => setModelReady(Boolean(body.available)))
-      .catch(() => setModelReady(false));
+      .then((body: { available: boolean }) =>
+        setModelState(body.available ? "ready" : "missing"),
+      )
+      .catch(() => {
+        if (!controller.signal.aborted) setModelState("unreachable");
+      });
     return () => controller.abort();
   }, []);
 
@@ -77,6 +88,50 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
     },
     [t],
   );
+
+  // Demo Mode: fetch the bundled sample leaf and feed it through the ordinary
+  // path. Nothing is faked — the classifier really runs on it.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("demo") !== "diagnose") return;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const blob = await (await fetch("/demo/sample-leaf.png")).blob();
+        const dataUrl: string = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+        if (cancelled) return;
+        setPreview(dataUrl);
+        setPayload({ base64: dataUrl.split(",")[1] ?? "", mediaType: "image/png" });
+        setAutoRun(true);
+      } catch {
+        /* demo aid only — a failure here must not disturb the real screen */
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!autoRun || !payload) return;
+    // Deferred out of the effect body. setTimeout rather than rAF: a browser
+    // pauses rAF entirely in a background tab, which would silently leave the
+    // demo trigger unfired.
+    const timer = window.setTimeout(() => {
+      setAutoRun(false);
+      void run();
+    }, 0);
+    return () => window.clearTimeout(timer);
+    // run() is stable enough for this one-shot demo trigger.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoRun, payload]);
 
   async function run() {
     if (!payload) return;
@@ -139,9 +194,13 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
       </div>
 
       {/* Stated up front, not after the farmer has waited for a result. */}
-      {modelReady === false ? (
+      {modelState === "missing" ? (
         <Disclaimer tone="sample" label={t.modelMissingLabel}>
           {t.modelMissingBody}
+        </Disclaimer>
+      ) : modelState === "unreachable" ? (
+        <Disclaimer tone="advice" label={t.serverUnreachableLabel}>
+          {t.serverUnreachableBody}
         </Disclaimer>
       ) : null}
 
@@ -169,7 +228,7 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
               variant="primary"
               withArrow
               onClick={() => void run()}
-              disabled={busy || modelReady === false}
+              disabled={busy || modelState === "missing"}
             >
               {busy ? t.diagnosing : t.diagnose}
             </Button>

@@ -7,7 +7,7 @@ from typing import List, Literal, Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from app.services.claude import complete_structured, has_api_key
+from app.services.llm import LLMAuthError, LLMError, complete_structured, has_api_key
 from app.services.grounding import GROUNDING_DIR, load_grounding
 from app.services.prompts import build_system_prompt
 from app.services.usage import bump
@@ -48,7 +48,7 @@ async def demand_note(request: DemandRequest) -> dict:
     if not has_api_key():
         raise HTTPException(
             status_code=503,
-            detail="LLM API key is not set, so the demand note cannot be generated. Your log is still saved on this device.",
+            detail="GEMINI_API_KEY is not set, so the demand note cannot be generated. Your log is still saved on this device.",
         )
 
     rows = "\n".join(
@@ -71,9 +71,11 @@ async def demand_note(request: DemandRequest) -> dict:
         parsed: DemandNote = await complete_structured(
             system=system, user=user, output_format=DemandNote
         )
-    except Exception as exc:
+    except LLMAuthError:
+        raise HTTPException(status_code=502, detail="The AI service rejected the API key.")
+    except LLMError as exc:
         logger.exception("Demand note failed")
-        raise HTTPException(status_code=502, detail=f"LLM demand note generation failed: {exc}")
+        raise HTTPException(status_code=502, detail=str(exc))
 
     return {"demand": parsed.model_dump(), "entriesUsed": len(request.entries)}
 
