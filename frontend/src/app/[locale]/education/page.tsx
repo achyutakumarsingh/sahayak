@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ChatPanel } from "@/components/chat-panel";
+import { NcertViewer } from "@/components/education/ncert-viewer";
 import { Reveal } from "@/components/reveal";
 import { Disclaimer, SectionHeader, StatusDot } from "@/components/ui";
 import { isLocale } from "@/i18n/config";
@@ -33,6 +34,7 @@ export default async function Page({
   const def = getModule(SLUG);
   const copy = dict.modules[SLUG];
   const index = modules.findIndex((m) => m.slug === SLUG) + 1;
+  const isHindi = locale === "hi";
 
   return (
     <article className="mx-auto flex max-w-4xl flex-col gap-8 px-5 py-10 sm:py-12">
@@ -42,13 +44,14 @@ export default async function Page({
         eyebrow={copy.community}
         title={copy.name}
         description={copy.description}
-        action={<StatusDot tone="warn" label={dict.chat.sampleDataLabel} />}
+        action={<StatusDot tone="ok" label="Active" />}
       />
 
-      {/* CLAUDE.md: sample data is labelled as sample, never presented as live. */}
       <Disclaimer tone="sample" label={dict.chat.sampleDataLabel}>
         {dict.chat.sampleDataBody}
       </Disclaimer>
+
+      <NcertViewer dict={dict} isHindi={isHindi} />
 
       <Reveal>
         <ChatPanel

@@ -227,6 +227,25 @@
       "stepLabel": "Step",
       "checkEligibility": "Check My Eligibility",
       "eligibleCount": "Eligible Schemes Found"
+    },
+    "disaster": {
+      "title": "District Hazard Alert & Preparedness Checklist",
+      "selectDistrict": "Select District",
+      "alertLevel": "Live Hazard Alert Level",
+      "emergencyKit": "Offline Emergency Kit Checklist",
+      "completed": "items ready"
+    },
+    "education": {
+      "title": "NCERT Science & Math Doubt Tutor",
+      "selectSubject": "Select Class & Subject",
+      "chapterExcerpts": "Cited NCERT Chapter Excerpts",
+      "doubtPlaceholder": "Enter your Science or Math question..."
+    },
+    "accessibility": {
+      "title": "Hands-Free Voice Controller & Speech Studio",
+      "voiceCommands": "Supported Voice Commands",
+      "startController": "Start Hands-Free Voice Navigation",
+      "listeningActive": "Listening for commands…"
     }
   },
   "sea": {

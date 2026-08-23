@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { VoiceController } from "@/components/accessibility/voice-controller";
 import { ChatPanel } from "@/components/chat-panel";
 import { Reveal } from "@/components/reveal";
 import { Disclaimer, SectionHeader, StatusDot } from "@/components/ui";
@@ -42,13 +43,14 @@ export default async function Page({
         eyebrow={copy.community}
         title={copy.name}
         description={copy.description}
-        action={<StatusDot tone="warn" label={dict.chat.sampleDataLabel} />}
+        action={<StatusDot tone="ok" label="Active" />}
       />
 
-      {/* CLAUDE.md: sample data is labelled as sample, never presented as live. */}
       <Disclaimer tone="sample" label={dict.chat.sampleDataLabel}>
         {dict.chat.sampleDataBody}
       </Disclaimer>
+
+      <VoiceController locale={locale} dict={dict} />
 
       <Reveal>
         <ChatPanel

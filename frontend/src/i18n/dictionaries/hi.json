@@ -227,6 +227,25 @@
       "stepLabel": "चरण",
       "checkEligibility": "मेरी पात्रता जाँचें",
       "eligibleCount": "उपयुक्त योजनाएँ मिलीं"
+    },
+    "disaster": {
+      "title": "ज़िला आपदा चेतावनी एवं तैयारी सूची",
+      "selectDistrict": "ज़िला चुनें",
+      "alertLevel": "आपदा चेतावनी स्तर",
+      "emergencyKit": "ऑफ़लाइन आपातकालीन तैयारी सूची",
+      "completed": "सामग्री तैयार"
+    },
+    "education": {
+      "title": "एनसीईआरटी विज्ञान एवं गणित शंका समाधान",
+      "selectSubject": "कक्षा और विषय चुनें",
+      "chapterExcerpts": "एनसीईआरटी अध्याय के प्रामाणिक अंश",
+      "doubtPlaceholder": "अपना विज्ञान या गणित का प्रश्न दर्ज करें..."
+    },
+    "accessibility": {
+      "title": "हैंड्स-फ्री आवाज़ नियंत्रक एवं स्पीच स्टूडियो",
+      "voiceCommands": "उपलब्ध आवाज़ कमांड",
+      "startController": "हैंड्स-फ्री नेविगेशन शुरू करें",
+      "listeningActive": "कमांड सुने जा रहे हैं…"
     }
   },
   "sea": {
