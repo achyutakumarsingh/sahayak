@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ChatPanel } from "@/components/chat-panel";
 import { CropDiagnosis } from "@/components/modules/crop-diagnosis";
 import { MandiPrices } from "@/components/modules/mandi-prices";
+import { Reveal } from "@/components/reveal";
 import { SectionHeader, StatusDot } from "@/components/ui";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -46,10 +47,15 @@ export default async function Page({
         action={<StatusDot tone="ok" label={dict.status.flagship} />}
       />
 
-      <CropDiagnosis locale={locale} dict={dict} />
-      <MandiPrices dict={dict} />
-
-      <ChatPanel module={SLUG} locale={locale} dict={dict} />
+      <Reveal>
+        <CropDiagnosis locale={locale} dict={dict} />
+      </Reveal>
+      <Reveal delay={80}>
+        <MandiPrices dict={dict} />
+      </Reveal>
+      <Reveal delay={160}>
+        <ChatPanel module={SLUG} locale={locale} dict={dict} />
+      </Reveal>
 
       <p className="meta">{def.monogram} · grounding/{SLUG}.json · models/crop_disease.onnx</p>
     </article>

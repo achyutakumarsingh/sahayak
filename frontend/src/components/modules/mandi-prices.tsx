@@ -78,11 +78,23 @@ export function MandiPrices({ dict }: { dict: Dictionary }) {
 
   return (
     <section aria-labelledby="mandi-heading" className="flex flex-col gap-4">
-      <div>
-        <h2 id="mandi-heading" className="text-lg font-semibold tracking-tight text-ink">
-          {t.mandiTitle}
-        </h2>
-        <p className="mt-1 text-ink-2">{t.mandiIntro}</p>
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <div>
+          <h2 id="mandi-heading" className="text-lg font-semibold tracking-tight text-ink">
+            {t.mandiTitle}
+          </h2>
+          <p className="mt-1 text-ink-2">{t.mandiIntro}</p>
+        </div>
+
+        {/* Live indicator: opacity pulse only, and it appears only once real
+            rows have actually arrived. */}
+        {data && data.records.length > 0 ? (
+          <p className="meta flex items-center gap-2 text-ink-2">
+            <span aria-hidden="true" className="pulse-dot size-1.5 rounded-full bg-accent" />
+            {t.live}
+            {data.records[0]?.arrivalDate ? ` · ${data.records[0].arrivalDate}` : ""}
+          </p>
+        ) : null}
       </div>
 
       <div className="flex flex-wrap items-end gap-3">

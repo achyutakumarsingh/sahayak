@@ -171,8 +171,9 @@
   --step-0: 1.1875rem;
   --step-1: 1.4375rem;
   --step-2: 1.875rem;
-  --step-3: 2.5rem;
-  --step-4: 3.25rem;
+  --step-3: 2.75rem;
+  --step-4: 4rem;
+  --step-5: clamp(3.75rem, 7.6vw, 6.5rem);
 
   /* Spacing grows with the text, or the layout gets tighter as type gets
      bigger — which is the opposite of what someone enabling this wants. */
@@ -192,8 +193,10 @@
   --step-0: 0.9375rem;
   --step-1: 1.125rem;
   --step-2: 1.5rem;
-  --step-3: 2rem;
-  --step-4: 2.75rem;
+  --step-3: 2.25rem;
+  --step-4: 3.5rem;
+  /* Hero only. Lands at 96px on a desktop viewport and never below 52px. */
+  --step-5: clamp(3.25rem, 7vw, 6rem);
 
   --radius: 8px;
   --radius-sm: 4px;
@@ -237,6 +240,7 @@
   --text-xl: var(--step-2);
   --text-2xl: var(--step-3);
   --text-3xl: var(--step-4);
+  --text-hero: var(--step-5);
 
   --font-sans: var(--font-inter-tight), var(--font-devanagari), ui-sans-serif,
     system-ui, sans-serif;
@@ -262,6 +266,10 @@
     font-size: var(--step-0);
     line-height: var(--leading);
     -webkit-font-smoothing: antialiased;
+  }
+
+  body[lang="hi"] {
+    line-height: 1.7;
   }
 
   ::selection {
@@ -389,6 +397,59 @@
 
   .pad-lg {
     padding: var(--pad-lg);
+  }
+
+  /* Display type. The size and weight jump against unchanged body copy is what
+     reads as confident here — no extra colour is spent on it. */
+  .display {
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+    text-wrap: balance;
+  }
+
+  .display-sm {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+  }
+
+  /* Scroll reveal. The attribute is only added once JS has mounted, so with no
+     JS the content renders normally rather than staying invisible. */
+  [data-reveal="pending"] {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  [data-reveal="in"] {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 420ms var(--ease),
+      transform 420ms var(--ease);
+  }
+
+  /* Live indicator. Opacity only — no glow, no scale. */
+  .pulse-dot {
+    animation: pulse-dot 2s var(--ease) infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+
+  /* The one loud element on the diagnosis screen. */
+  .accent-bar {
+    background: var(--accent);
+    height: 0.625rem;
+    border-radius: 2px;
+    transition: width 520ms var(--ease);
   }
 
   .skip-link {

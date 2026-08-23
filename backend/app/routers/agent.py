@@ -18,6 +18,7 @@ from app.schemas.agent import AgentRequest
 from app.services.claude import get_client, has_api_key
 from app.services.grounding import GroundingNotFound, available_modules, load_grounding
 from app.services.prompts import build_system_prompt
+from app.services.usage import bump
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +82,10 @@ async def ask(
             ) as stream:
                 async for text in stream.text_stream:
                     yield sse({"type": "delta", "text": text})
+
+                # Counted on completion, not on request, so an aborted or
+                # failed stream is not recorded as an answered question.
+                await bump("questions")
 
                 final = await stream.get_final_message()
                 yield sse(

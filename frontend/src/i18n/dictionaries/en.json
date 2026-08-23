@@ -23,7 +23,8 @@
     "modulesLabel": "Modules",
     "moduleCount": "8 modules",
     "communityLabel": "Serves",
-    "browseAll": "Browse all eight modules"
+    "browseAll": "Browse all eight modules",
+    "hero": "One trained model. Eight communities. Grounded answers, or none at all."
   },
   "status": {
     "scaffold": "Scaffold",
@@ -325,6 +326,27 @@
     "mandiRateLimited": "data.gov.in is rate-limiting the shared demo key. Register a free key at data.gov.in and set DATA_GOV_IN_API_KEY in backend/.env.",
     "mandiError": "Could not load mandi prices.",
     "sampleKeyLabel": "Shared demo key",
-    "sampleKeyBody": "These rates are real and come from data.gov.in, but the request used the sample key published in their documentation. It is shared by every demo and will be throttled. Register a free key before relying on this."
+    "sampleKeyBody": "These rates are real and come from data.gov.in, but the request used the sample key published in their documentation. It is shared by every demo and will be throttled. Register a free key before relying on this.",
+    "unclearTitle": "Photo unclear — please retake",
+    "unclearLowConfidence": "The model is not confident enough about this photo to name a disease.",
+    "unclearAmbiguous": "The model is split between two possibilities, so it cannot give you one answer.",
+    "unclearHelp": "Try again in daylight, hold the camera steady, and fill the frame with a single affected leaf against a plain background.",
+    "unclearDetail": "Top score {top} · gap to next {margin}",
+    "flagPrompt": "This diagnosis looks wrong",
+    "flagSending": "Sending…",
+    "flagThanks": "Thanks, this helps us improve the model.",
+    "flagStored": "Your photo and the prediction were saved so this case can be reviewed.",
+    "flagError": "The report could not be sent. Try again.",
+    "live": "Live"
+  },
+  "impact": {
+    "title": "Impact so far",
+    "intro": "Requests this deployment has served. Counted on the server; nothing here identifies anyone.",
+    "diagnoses": "Crop photos checked",
+    "schemeMatches": "Scheme checks run",
+    "questions": "Questions answered",
+    "show": "Show impact",
+    "hide": "Hide impact",
+    "unavailable": "Counters are not available right now."
   }
 }

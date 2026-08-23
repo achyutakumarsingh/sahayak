@@ -3,10 +3,26 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 
 import { Button, Card, Disclaimer } from "@/components/ui";
+import { MicIcon, SpeakerIcon } from "@/components/ui/icons";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { streamAgent, type ChatMessage } from "@/lib/agent-stream";
 import { cn } from "@/lib/cn";
+
+/** Minimal shape of the Web Speech API we rely on; it is not in lib.dom. */
+type SpeechRecognitionLike = {
+  lang: string;
+  interimResults: boolean;
+  start: () => void;
+  onstart: (() => void) | null;
+  onend: (() => void) | null;
+  onerror: (() => void) | null;
+  onresult: ((event: SpeechRecognitionResultLike) => void) | null;
+};
+
+type SpeechRecognitionResultLike = {
+  results: ArrayLike<ArrayLike<{ transcript: string }>>;
+};
 
 let counter = 0;
 const nextId = () => `m${++counter}`;
@@ -23,11 +39,6 @@ export type ChatPanelProps = {
   className?: string;
 };
 
-/**
- * The shared chat surface for every grounded module. A module page drops this
- * in with its slug; the system prompt, grounding corpus and refusal behaviour
- * all live on the backend.
- */
 export function ChatPanel({
   module,
   locale,
@@ -45,6 +56,8 @@ export function ChatPanel({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [draft, setDraft] = useState("");
   const [streaming, setStreaming] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const abortRef = useRef<AbortController | null>(null);
@@ -55,6 +68,66 @@ export function ChatPanel({
   useEffect(() => {
     logEndRef.current?.scrollIntoView({ block: "end" });
   }, [messages]);
+
+  // Text-To-Speech Playback
+  const speakMessage = useCallback((id: string, text: string) => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+
+    if (speakingId === id) {
+      setSpeakingId(null);
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = locale === "hi" ? "hi-IN" : "en-IN";
+    utterance.onend = () => setSpeakingId(null);
+    utterance.onerror = () => setSpeakingId(null);
+
+    setSpeakingId(id);
+    window.speechSynthesis.speak(utterance);
+  }, [locale, speakingId]);
+
+  // Voice Input Speech Recognition
+  const toggleListening = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const SpeechRecognition =
+      (window as unknown as { SpeechRecognition?: new () => SpeechRecognitionLike })
+        .SpeechRecognition ||
+      (window as unknown as { webkitSpeechRecognition?: new () => SpeechRecognitionLike })
+        .webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      setError("Speech recognition is not supported in this browser.");
+      return;
+    }
+
+    if (listening) {
+      setListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = locale === "hi" ? "hi-IN" : "en-IN";
+      recognition.interimResults = false;
+
+      recognition.onstart = () => setListening(true);
+      recognition.onend = () => setListening(false);
+      recognition.onerror = () => {
+        setListening(false);
+        setError("Voice input error. Please try typing.");
+      };
+      recognition.onresult = (event: SpeechRecognitionResultLike) => {
+        const transcript = event.results[0][0].transcript;
+        if (transcript) setDraft(transcript);
+      };
+
+      recognition.start();
+    } catch {
+      setListening(false);
+    }
+  }, [listening, locale]);
 
   const send = useCallback(
     async (question: string) => {
@@ -67,8 +140,6 @@ export function ChatPanel({
       const outgoing: ChatMessage = { id: nextId(), role: "user", content: text };
       const replyId = nextId();
 
-      // The history sent upstream is what the reader can see, and excludes the
-      // empty assistant placeholder we render for the streaming text.
       const history = [...messages, outgoing].map(({ role, content }) => ({
         role,
         content,
@@ -112,8 +183,6 @@ export function ChatPanel({
       } finally {
         setStreaming(false);
         abortRef.current = null;
-        // Drop the placeholder if nothing ever arrived, so the log does not
-        // show an empty reply bubble next to the error.
         setMessages((prev) =>
           prev.filter((m) => !(m.id === replyId && m.content === "")),
         );
@@ -148,16 +217,34 @@ export function ChatPanel({
           aria-label={t.log}
           aria-live="polite"
           aria-busy={streaming}
-          className="flex max-h-[26rem] min-h-40 flex-col gap-4 overflow-y-auto pad-md"
+          className="flex max-h-[28rem] min-h-40 flex-col gap-4 overflow-y-auto pad-md"
         >
           {messages.length === 0 ? (
             <p className="text-ink-2">{t.empty}</p>
           ) : (
             messages.map((message) => (
-              <div key={message.id} className="flex flex-col gap-1">
-                <span className="label">
-                  {message.role === "user" ? t.you : t.assistant}
-                </span>
+              <div key={message.id} className="flex flex-col gap-1 group">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="label">
+                    {message.role === "user" ? t.you : t.assistant}
+                  </span>
+                  {message.role === "assistant" && message.content ? (
+                    <button
+                      type="button"
+                      onClick={() => speakMessage(message.id, message.content)}
+                      className={cn(
+                        "inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-chip border transition-colors",
+                        speakingId === message.id
+                          ? "bg-accent text-accent-ink border-accent"
+                          : "border-border text-ink-2 hover:text-ink hover:bg-surface-2",
+                      )}
+                      aria-label={speakingId === message.id ? (t.stopAudio || "Stop") : (t.listen || "Listen")}
+                    >
+                      <SpeakerIcon />
+                      <span>{speakingId === message.id ? (t.stopAudio || "Stop") : (t.listen || "Listen")}</span>
+                    </button>
+                  ) : null}
+                </div>
                 <p
                   className={cn(
                     "whitespace-pre-wrap",
@@ -166,7 +253,10 @@ export function ChatPanel({
                 >
                   {message.content}
                   {streaming && message.content === "" ? (
-                    <span className="meta">{t.thinking}</span>
+                    <span className="flex flex-col gap-2 py-2">
+                      <span className="h-3 w-48 rounded bg-border animate-pulse inline-block" />
+                      <span className="h-3 w-36 rounded bg-border animate-pulse inline-block" />
+                    </span>
                   ) : null}
                 </p>
               </div>
@@ -207,14 +297,34 @@ export function ChatPanel({
               autoComplete="off"
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder={t.placeholder}
+              placeholder={listening ? (t.micListening || "Listening...") : t.placeholder}
               disabled={streaming}
               className={cn(
                 "min-w-0 flex-1 rounded-chip border border-border bg-surface px-3 py-2 text-ink",
                 "placeholder:text-subtle disabled:opacity-60",
                 "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+                listening && "border-accent ring-1 ring-accent",
               )}
             />
+
+            <button
+              type="button"
+              onClick={toggleListening}
+              disabled={streaming}
+              className={cn(
+                "inline-flex items-center gap-1 px-3 py-2 rounded-chip border text-sm font-medium transition-colors",
+                listening
+                  ? "bg-danger text-white border-danger animate-pulse"
+                  : "border-border bg-surface text-ink hover:bg-surface-2",
+              )}
+              title={t.micStart || "Speak"}
+            >
+              <MicIcon />
+              <span className="sr-only sm:not-sr-only sm:text-xs">
+                {listening ? (t.micListening || "Listening...") : (t.micStart || "Voice")}
+              </span>
+            </button>
+
             {streaming ? (
               <Button
                 type="button"

@@ -27,3 +27,6 @@ __pycache__/
 
 # TypeScript incremental build cache
 *.tsbuildinfo
+.env
+backend/.env
+*.env

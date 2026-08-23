@@ -5,8 +5,8 @@ import { cn } from "@/lib/cn";
 type Level = "h1" | "h2" | "h3";
 
 const TITLE_SIZE: Record<Level, string> = {
-  h1: "text-2xl",
-  h2: "text-xl",
+  h1: "text-3xl",
+  h2: "text-2xl",
   h3: "text-lg",
 };
 
@@ -48,7 +48,7 @@ export function SectionHeader({
         {number || eyebrow ? (
           <p className="label flex items-center gap-2">
             {number ? (
-              <span className="text-accent tabular-nums">{number}</span>
+              <span className="tabular-nums text-ink-2">{number}</span>
             ) : null}
             {eyebrow ? <span>{eyebrow}</span> : null}
           </p>
@@ -57,7 +57,8 @@ export function SectionHeader({
         <Heading
           id={id}
           className={cn(
-            "mt-1.5 font-semibold tracking-tight text-ink",
+            "mt-2 text-ink",
+            as === "h3" ? "font-semibold tracking-tight" : "display-sm",
             TITLE_SIZE[as],
           )}
         >

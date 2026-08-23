@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { Reveal } from "@/components/reveal";
 import { Button, Card, Disclaimer, StatusDot } from "@/components/ui";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
@@ -14,12 +15,18 @@ const MAX_BYTES = 5 * 1024 * 1024;
 type Prediction = { label: string; confidence: number };
 type Advice = { summary: string; next_step: string; caution: string };
 type Result = {
+  status: "ok" | "unclear";
+  reason: "low_confidence" | "ambiguous" | null;
   predictions: Prediction[];
+  topConfidence: number;
+  margin: number;
   model: string;
   inputSize: number[];
   advice: Advice | null;
   adviceAvailable: boolean;
 };
+
+type FlagState = "idle" | "sending" | "done" | "error";
 
 /** Turns "Tomato___Early_blight" into "Tomato · Early blight". */
 function prettyLabel(label: string): string {
@@ -40,6 +47,7 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
   const [result, setResult] = useState<Result | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [flag, setFlag] = useState<FlagState>("idle");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -75,6 +83,7 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
     setBusy(true);
     setError(null);
     setResult(null);
+    setFlag("idle");
 
     try {
       const response = await fetch(apiUrl("/api/farmers/diagnose"), {
@@ -97,6 +106,26 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
       setError(t.errorGeneric);
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function reportWrong() {
+    if (!payload || !result || result.status !== "ok") return;
+    setFlag("sending");
+    try {
+      const response = await fetch(apiUrl("/api/farmers/flag"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          predicted_label: result.predictions[0].label,
+          confidence: result.predictions[0].confidence,
+          image_base64: payload.base64,
+          media_type: payload.mediaType,
+        }),
+      });
+      setFlag(response.ok ? "done" : "error");
+    } catch {
+      setFlag("error");
     }
   }
 
@@ -165,7 +194,22 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
       </Card>
 
       <div aria-live="polite" aria-busy={busy}>
-        {result ? (
+        {result && result.status === "unclear" ? (
+          <Reveal>
+          <Card className="border-warn/50">
+            <p className="label text-warn">{t.unclearTitle}</p>
+            <p className="mt-2 text-ink">
+              {result.reason === "ambiguous" ? t.unclearAmbiguous : t.unclearLowConfidence}
+            </p>
+            <p className="mt-2 text-ink-2">{t.unclearHelp}</p>
+            <p className="meta mt-3 text-subtle">
+              {t.unclearDetail
+                .replace("{top}", `${(result.topConfidence * 100).toFixed(1)} %`)
+                .replace("{margin}", `${(result.margin * 100).toFixed(1)} pt`)}
+            </p>
+          </Card>
+          </Reveal>
+        ) : result ? (
           <div className="flex flex-col gap-4">
             <Card>
               <div className="flex items-baseline justify-between gap-3">
@@ -174,19 +218,69 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
                   {result.model} · {result.inputSize.join("×")}
                 </p>
               </div>
-              <ul className="mt-3">
-                {result.predictions.map((p, i) => (
+              <div className="mt-4">
+                <p className="display-sm text-2xl text-ink">
+                  {prettyLabel(result.predictions[0].label)}
+                </p>
+
+                <div className="mt-3 flex items-center gap-4">
+                  <div
+                    className="h-2.5 min-w-0 flex-1 overflow-hidden rounded-[2px] bg-surface-2"
+                    role="img"
+                    aria-label={`${t.confidence}: ${(result.predictions[0].confidence * 100).toFixed(1)}%`}
+                  >
+                    <div
+                      className="accent-bar"
+                      style={{ width: `${Math.round(result.predictions[0].confidence * 100)}%` }}
+                    />
+                  </div>
+                  <span className="meta shrink-0 text-2xl text-ink tabular-nums">
+                    {(result.predictions[0].confidence * 100).toFixed(1)} %
+                  </span>
+                </div>
+              </div>
+
+              {/* Runner-up classes stay monochrome — the bar is the only accent. */}
+              <ul className="mt-5 border-t border-border pt-1">
+                {result.predictions.slice(1).map((p) => (
                   <li
                     key={p.label}
                     className="flex items-baseline justify-between gap-4 border-b border-border py-2 last:border-b-0"
                   >
-                    <span className={cn(i === 0 ? "font-medium text-ink" : "text-ink-2")}>
-                      {prettyLabel(p.label)}
-                    </span>
-                    <span className="meta text-ink">{(p.confidence * 100).toFixed(1)} %</span>
+                    <span className="text-ink-2">{prettyLabel(p.label)}</span>
+                    <span className="meta text-ink-2">{(p.confidence * 100).toFixed(1)} %</span>
                   </li>
                 ))}
               </ul>
+
+              {/* Feedback loop: a wrong call is only useful if a farmer can say so. */}
+              <div className="mt-4 border-t border-border pt-3">
+                {flag === "done" ? (
+                  <p role="status" className="text-ok">
+                    {t.flagThanks}{" "}
+                    <span className="text-ink-2">{t.flagStored}</span>
+                  </p>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-3">
+                    {/* Monochrome: the confidence bar is this screen's accent. */}
+                    <Button
+                      type="button"
+                      size="sm"
+                      withArrow={false}
+                      onClick={() => void reportWrong()}
+                      disabled={flag === "sending"}
+                      className="text-ink-2 hover:text-ink"
+                    >
+                      {flag === "sending" ? t.flagSending : t.flagPrompt}
+                    </Button>
+                    {flag === "error" ? (
+                      <span role="alert" className="text-xs text-danger">
+                        {t.flagError}
+                      </span>
+                    ) : null}
+                  </div>
+                )}
+              </div>
             </Card>
 
             <Card>

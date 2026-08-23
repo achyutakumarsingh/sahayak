@@ -46,12 +46,12 @@ export function AccessibilityMenu({
         onChange={(next) => setPreference("voiceMode", next)}
         label={dict.a11y.voiceMode}
         hint={dict.a11y.voiceModeHint}
-        badge={dict.a11y.comingSoon}
+        badge="Active"
       />
 
       {voiceMode ? (
-        <p role="status" className="rounded-card border border-info/45 bg-surface-2 p-3 text-xs text-ink-2">
-          {dict.a11y.voicePending}
+        <p role="status" className="rounded-card border border-ok/45 bg-ok/10 p-3 text-xs text-ink">
+          ✔ Voice mode is enabled. Use microphone & listen controls in chat modules for speech input & audio playback.
         </p>
       ) : null}
     </section>

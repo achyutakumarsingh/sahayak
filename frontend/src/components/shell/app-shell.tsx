@@ -12,6 +12,8 @@ import type { ReactNode } from "react";
  * Sidebar from lg up, bottom tabs below it. Both render on the server; only
  * the interactive parts inside them are client components.
  */
+import { CommandPalette } from "@/components/shell/command-palette";
+
 export function AppShell({
   locale,
   dict,
@@ -27,15 +29,19 @@ export function AppShell({
         {dict.app.skipToContent}
       </a>
 
-      {/* Compact top bar — mobile only; the sidebar covers this on desktop. */}
-      <header className="sticky top-0 z-30 border-b border-border bg-surface lg:hidden">
+      {/* Compact top bar — mobile and desktop search header */}
+      <header className="sticky top-0 z-30 border-b border-border bg-surface">
         <div className="flex items-center justify-between gap-4 px-4 py-3">
-          <Link href={localePath(locale)} className="flex items-baseline gap-2 no-underline">
+          <Link href={localePath(locale)} className="flex items-baseline gap-2 no-underline lg:hidden">
             <span className="text-lg font-semibold tracking-tight text-ink">
               {dict.app.name}
             </span>
           </Link>
-          <LanguageSwitch locale={locale} label={dict.app.languageLabel} compact />
+
+          <div className="flex items-center gap-3 ml-auto">
+            <CommandPalette locale={locale} dict={dict} />
+            <LanguageSwitch locale={locale} label={dict.app.languageLabel} compact />
+          </div>
         </div>
       </header>
 

@@ -5,3 +5,9 @@ __pycache__/
 *.db
 .pytest_cache/
 .ruff_cache/
+
+# Feedback and counters written at runtime. The flagged photos are farmers'
+# own images and the counters are per-deployment, so neither belongs in git.
+data/flagged_diagnoses.jsonl
+data/flagged_images/
+data/usage_stats.json

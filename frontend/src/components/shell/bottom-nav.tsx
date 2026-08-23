@@ -45,7 +45,12 @@ export function BottomNav({ locale, dict }: { locale: Locale; dict: Dictionary }
             <Link
               href={localePath(locale)}
               aria-current={onHome ? "page" : undefined}
-              className={cn(TAB, onHome ? "text-accent" : "text-ink-2 hover:text-ink")}
+              className={cn(
+                TAB,
+                onHome
+                  ? "text-accent bg-accent-wash border-t-2 border-accent font-semibold"
+                  : "text-ink-2 hover:text-ink",
+              )}
             >
               <span aria-hidden="true" className="meta text-current">
                 ⌂
@@ -62,7 +67,9 @@ export function BottomNav({ locale, dict }: { locale: Locale; dict: Dictionary }
               aria-expanded={sheet === "modules"}
               className={cn(
                 TAB,
-                !onHome ? "text-accent" : "text-ink-2 hover:text-ink",
+                !onHome && sheet !== "more"
+                  ? "text-accent bg-accent-wash border-t-2 border-accent font-semibold"
+                  : "text-ink-2 hover:text-ink",
               )}
             >
               <span aria-hidden="true" className="meta text-current">
@@ -78,7 +85,12 @@ export function BottomNav({ locale, dict }: { locale: Locale; dict: Dictionary }
               onClick={() => setSheet("more")}
               aria-haspopup="dialog"
               aria-expanded={sheet === "more"}
-              className={cn(TAB, "text-ink-2 hover:text-ink")}
+              className={cn(
+                TAB,
+                sheet === "more"
+                  ? "text-accent bg-accent-wash border-t-2 border-accent font-semibold"
+                  : "text-ink-2 hover:text-ink",
+              )}
             >
               <span aria-hidden="true" className="meta text-current">
                 ⋯

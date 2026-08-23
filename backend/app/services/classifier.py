@@ -25,6 +25,24 @@ BACKEND_DIR = Path(__file__).resolve().parents[2]
 IMAGENET_MEAN = np.array([0.485, 0.456, 0.406], dtype=np.float32)
 IMAGENET_STD = np.array([0.229, 0.224, 0.225], dtype=np.float32)
 
+# A result is only reported as a diagnosis when the top class is confident on
+# its own AND clearly ahead of the runner-up.
+#
+# The margin matters because the model has no out-of-distribution detection: a
+# softmax always sums to 1, so an image the model has never seen anything like
+# still gets divided among the eight classes it knows, and one of them can come
+# out looking confident. A small top1-vs-top2 gap is the clearest signal we can
+# read from the output that the model is torn rather than sure.
+#
+# This is a filter, not a guarantee. Softmax confidence is not calibrated, and
+# an off-distribution photo can still produce a large top1 and a large margin
+# (pure noise scores ~0.89 on this model). It removes the "torn between two
+# classes" failures; it does not make the classifier safe on non-leaf images.
+# That is why the screen still tells the farmer a photo cannot confirm a
+# disease, whatever the numbers say.
+CONFIDENCE_FLOOR = 0.55
+MARGIN_FLOOR = 0.20
+
 
 class ModelUnavailable(Exception):
     """No usable classifier is installed."""
@@ -100,12 +118,29 @@ def classify(raw: bytes, top_k: int = 3) -> dict:
 
     # Treat the output as logits unless it already looks like a distribution.
     probabilities = scores if np.isclose(scores.sum(), 1.0, atol=1e-3) and scores.min() >= 0 else _softmax(scores)
-    order = np.argsort(probabilities)[::-1][:top_k]
+    ranked = np.argsort(probabilities)[::-1]
+
+    top1 = float(probabilities[ranked[0]])
+    top2 = float(probabilities[ranked[1]]) if ranked.size > 1 else 0.0
+    margin = top1 - top2
+
+    if top1 < CONFIDENCE_FLOOR:
+        status, reason = "unclear", "low_confidence"
+    elif margin <= MARGIN_FLOOR:
+        status, reason = "unclear", "ambiguous"
+    else:
+        status, reason = "ok", None
 
     return {
+        "status": status,
+        "reason": reason,
         "predictions": [
-            {"label": labels[i], "confidence": round(float(probabilities[i]), 4)} for i in order
+            {"label": labels[i], "confidence": round(float(probabilities[i]), 4)}
+            for i in ranked[:top_k]
         ],
+        "topConfidence": round(top1, 4),
+        "margin": round(margin, 4),
+        "thresholds": {"confidence": CONFIDENCE_FLOOR, "margin": MARGIN_FLOOR},
         "model": model_path().name,
         "inputSize": list(_input_size(session)),
     }

@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field
 from app.services.claude import complete_structured, has_api_key
 from app.services.grounding import GROUNDING_DIR, load_grounding
 from app.services.prompts import build_system_prompt
+from app.services.usage import bump
 
 logger = logging.getLogger(__name__)
 
@@ -147,6 +148,8 @@ async def match_schemes(profile: Profile) -> dict:
             missed.append({**record, "failedOn": reasons})
         else:
             matched.append(record)
+
+    await bump("schemeMatches")
 
     return {
         "matched": matched,
