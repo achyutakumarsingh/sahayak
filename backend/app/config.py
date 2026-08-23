@@ -1,14 +1,9 @@
+"""Runtime configuration, loaded from the environment and backend/.env."""
+
 from functools import lru_cache
 from typing import List, Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-
-cors_origins: List[str] = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://bosc-1.onrender.com",
-]
 
 
 class Settings(BaseSettings):

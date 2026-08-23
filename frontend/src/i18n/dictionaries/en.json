@@ -385,7 +385,9 @@
     "flagThanks": "Thanks, this helps us improve the model.",
     "flagStored": "Your photo and the prediction were saved so this case can be reviewed.",
     "flagError": "The report could not be sent. Try again.",
-    "live": "Live"
+    "live": "Live",
+    "serverUnreachableLabel": "Cannot reach the server",
+    "serverUnreachableBody": "The classifier could not be reached, so we cannot tell whether a model is installed. Check that the backend is running, then reload."
   },
   "impact": {
     "title": "Impact so far",

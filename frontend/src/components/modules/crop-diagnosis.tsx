@@ -41,7 +41,13 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
   const t = dict.farmer;
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const [modelReady, setModelReady] = useState<boolean | null>(null);
+  // null = not asked yet, "missing" = server says no model, "unreachable" =
+  // could not ask. Collapsing the last two into one flag made the screen claim
+  // "no trained model installed" whenever the backend was simply down, which
+  // is a different problem with a different fix.
+  const [modelState, setModelState] = useState<"unknown" | "ready" | "missing" | "unreachable">(
+    "unknown",
+  );
   const [preview, setPreview] = useState<string | null>(null);
   const [payload, setPayload] = useState<{ base64: string; mediaType: string } | null>(null);
   const [result, setResult] = useState<Result | null>(null);
@@ -54,8 +60,12 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
     const controller = new AbortController();
     fetch(apiUrl("/api/farmers/model-status"), { signal: controller.signal })
       .then((r) => r.json())
-      .then((body: { available: boolean }) => setModelReady(Boolean(body.available)))
-      .catch(() => setModelReady(false));
+      .then((body: { available: boolean }) =>
+        setModelState(body.available ? "ready" : "missing"),
+      )
+      .catch(() => {
+        if (!controller.signal.aborted) setModelState("unreachable");
+      });
     return () => controller.abort();
   }, []);
 
@@ -184,9 +194,13 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
       </div>
 
       {/* Stated up front, not after the farmer has waited for a result. */}
-      {modelReady === false ? (
+      {modelState === "missing" ? (
         <Disclaimer tone="sample" label={t.modelMissingLabel}>
           {t.modelMissingBody}
+        </Disclaimer>
+      ) : modelState === "unreachable" ? (
+        <Disclaimer tone="advice" label={t.serverUnreachableLabel}>
+          {t.serverUnreachableBody}
         </Disclaimer>
       ) : null}
 
@@ -214,7 +228,7 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
               variant="primary"
               withArrow
               onClick={() => void run()}
-              disabled={busy || modelReady === false}
+              disabled={busy || modelState === "missing"}
             >
               {busy ? t.diagnosing : t.diagnose}
             </Button>
