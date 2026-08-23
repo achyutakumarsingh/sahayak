@@ -1,6 +1,6 @@
 # Deploying Sahayak Backend to Render
 
-This guide explains how to deploy the **Sahayak FastAPI Backend** on [Render](https://render.com).
+This guide explains how to deploy the **Sahayak FastAPI Backend** on [Render](https://render.com) using Google Gemini or Anthropic Claude.
 
 ---
 
@@ -9,14 +9,14 @@ This guide explains how to deploy the **Sahayak FastAPI Backend** on [Render](ht
 1. Push your repository changes to GitHub:
    ```bash
    git add .
-   git commit -m "Add Render deployment configuration and Dockerfile"
+   git commit -m "Add Gemini API key support and Render blueprint"
    git push origin main
    ```
 2. Go to your [Render Dashboard](https://dashboard.render.com/).
 3. Click **New +** in the top right and select **Blueprint**.
-4. Connect your GitHub repository (`https://github.com/Tushar2007-ux/Bosc`).
+4. Connect your GitHub repository (`https://github.com/achyutakumarsingh/sahayak`).
 5. Render will automatically detect `render.yaml`.
-6. When prompted for `ANTHROPIC_API_KEY`, enter your key (`sk-ant-...`).
+6. When prompted for `GEMINI_API_KEY`, enter your Gemini API key ([Get one from Google AI Studio](https://aistudio.google.com/app/apikey)).
 7. Click **Apply**. Render will build and deploy the web service automatically.
 
 ---
@@ -44,10 +44,10 @@ If you prefer to configure the service manually on Render:
 | Key | Value / Description | Default / Example |
 |---|---|---|
 | `ENVIRONMENT` | Deployment environment | `production` |
-| `ANTHROPIC_API_KEY` | Claude API key | `sk-ant-...` ([Get one here](https://console.anthropic.com/settings/keys)) |
-| `ANTHROPIC_MODEL` | Claude model name | `claude-sonnet-5` |
-| `ANTHROPIC_MAX_TOKENS` | Max tokens per response | `700` |
-| `ANTHROPIC_EFFORT` | Reasoning effort | `low` |
+| `GEMINI_API_KEY` | Google Gemini API key | `AIzaSy...` ([Get free key here](https://aistudio.google.com/app/apikey)) |
+| `GEMINI_MODEL` | Gemini model name | `gemini-2.5-flash` |
+| `ANTHROPIC_API_KEY` | *(Optional)* Claude API key | `sk-ant-...` |
+| `ANTHROPIC_MODEL` | *(Optional)* Claude model name | `claude-sonnet-5` |
 | `DATA_GOV_IN_API_KEY` | data.gov.in Agmarknet API key | `579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b` |
 | `CROP_MODEL_PATH` | Relative path to ONNX model | `models/crop_disease.onnx` |
 | `DATABASE_URL` | Database connection URL | `sqlite:///./sahayak.db` |

@@ -16,12 +16,10 @@ services:
         value: production
       - key: APP_NAME
         value: "Sahayak API"
-      - key: ANTHROPIC_MODEL
-        value: claude-sonnet-5
-      - key: ANTHROPIC_MAX_TOKENS
-        value: "700"
-      - key: ANTHROPIC_EFFORT
-        value: low
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: GEMINI_API_KEY
+        sync: false
       - key: DATA_GOV_IN_API_KEY
         value: 579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b
       - key: DATABASE_URL
@@ -30,5 +28,3 @@ services:
         value: models/crop_disease.onnx
       - key: CORS_ORIGINS
         value: "*"
-      - key: ANTHROPIC_API_KEY
-        sync: false

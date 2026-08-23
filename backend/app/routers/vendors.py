@@ -4,7 +4,6 @@ import json
 import logging
 from typing import List, Literal, Optional
 
-import anthropic
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
@@ -49,7 +48,7 @@ async def demand_note(request: DemandRequest) -> dict:
     if not has_api_key():
         raise HTTPException(
             status_code=503,
-            detail="ANTHROPIC_API_KEY is not set, so the demand note cannot be generated. Your log is still saved on this device.",
+            detail="LLM API key is not set, so the demand note cannot be generated. Your log is still saved on this device.",
         )
 
     rows = "\n".join(
@@ -72,13 +71,9 @@ async def demand_note(request: DemandRequest) -> dict:
         parsed: DemandNote = await complete_structured(
             system=system, user=user, output_format=DemandNote
         )
-    except anthropic.AuthenticationError:
-        raise HTTPException(status_code=502, detail="The Claude API key was rejected.")
-    except anthropic.APIStatusError as exc:
+    except Exception as exc:
         logger.exception("Demand note failed")
-        raise HTTPException(status_code=502, detail=f"Claude API error ({exc.status_code}).")
-    except anthropic.APIConnectionError:
-        raise HTTPException(status_code=502, detail="Could not reach the Claude API.")
+        raise HTTPException(status_code=502, detail=f"LLM demand note generation failed: {exc}")
 
     return {"demand": parsed.model_dump(), "entriesUsed": len(request.entries)}
 

@@ -18,7 +18,15 @@ class Settings(BaseSettings):
     app_name: str = "Sahayak API"
     environment: str = "development"
 
-    # Claude — every "agent" module in Sahayak runs through this key.
+    # LLM Provider selection: "gemini" (default if key present) or "anthropic"
+    llm_provider: Optional[str] = None
+
+    # Google Gemini — primary LLM provider
+    gemini_api_key: Optional[str] = None
+    google_api_key: Optional[str] = None
+    gemini_model: str = "gemini-2.5-flash"
+
+    # Claude / Anthropic — alternative LLM provider
     anthropic_api_key: Optional[str] = None
     anthropic_model: str = "claude-sonnet-5"
     # Deliberately small: these modules answer in 40-80 words, and a low cap

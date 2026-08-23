@@ -1,14 +1,13 @@
 """Sea-conditions dashboard for the Fishermen module.
 
 The readings and the verdict are deliberately separate calls: the numbers come
-from Open-Meteo and are always available, while the verdict needs a Claude key.
+from Open-Meteo and are always available, while the verdict needs an LLM key.
 A crew with no key still sees the real data.
 """
 
 import logging
 from typing import Literal, Optional
 
-import anthropic
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 
@@ -69,7 +68,7 @@ async def verdict(request: VerdictRequest) -> dict:
     if not has_api_key():
         raise HTTPException(
             status_code=503,
-            detail="ANTHROPIC_API_KEY is not set, so the verdict cannot be generated. The readings above are live.",
+            detail="LLM API key is not set, so the verdict cannot be generated. The readings above are live.",
         )
 
     # Same grounding as the chat: the thresholds the model reasons with are the
@@ -92,12 +91,8 @@ async def verdict(request: VerdictRequest) -> dict:
         parsed: Verdict = await complete_structured(
             system=system, user=user, output_format=Verdict
         )
-    except anthropic.AuthenticationError:
-        raise HTTPException(status_code=502, detail="The Claude API key was rejected.")
-    except anthropic.APIStatusError as exc:
+    except Exception as exc:
         logger.exception("Verdict generation failed")
-        raise HTTPException(status_code=502, detail=f"Claude API error ({exc.status_code}).")
-    except anthropic.APIConnectionError:
-        raise HTTPException(status_code=502, detail="Could not reach the Claude API.")
+        raise HTTPException(status_code=502, detail=f"LLM verdict generation failed: {exc}")
 
     return {"readings": readings, "verdict": parsed.model_dump()}

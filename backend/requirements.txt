@@ -6,7 +6,8 @@ pydantic-settings==2.15.0
 python-dotenv==1.2.3
 python-multipart==0.0.32
 
-# --- Claude orchestration ----------------------------------------------
+# --- LLM Orchestration (Gemini & Claude) --------------------------------
+google-genai==2.19.0
 anthropic==1.0.0
 httpx==0.28.1
 

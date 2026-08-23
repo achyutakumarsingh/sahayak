@@ -5,12 +5,10 @@ import binascii
 import logging
 from typing import List
 
-import anthropic
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from app.config import get_settings
-from app.services.claude import complete_structured, get_client, has_api_key
+from app.services.claude import complete_structured, get_active_model, has_api_key
 from app.services.grounding import load_grounding
 from app.services.prompts import build_listing_prompt
 
@@ -63,8 +61,8 @@ async def listing(request: ListingRequest) -> dict:
         raise HTTPException(
             status_code=503,
             detail=(
-                "ANTHROPIC_API_KEY is not set, so a listing cannot be generated. "
-                "Add a real key to backend/.env and restart the backend."
+                "LLM API key is not set. Add GEMINI_API_KEY (or ANTHROPIC_API_KEY) "
+                "to backend/.env and restart the backend."
             ),
         )
 
@@ -93,12 +91,8 @@ async def listing(request: ListingRequest) -> dict:
         parsed: Listing = await complete_structured(
             system=system, user=content, output_format=Listing, max_tokens=1400
         )
-    except anthropic.AuthenticationError:
-        raise HTTPException(status_code=502, detail="The Claude API key was rejected.")
-    except anthropic.APIStatusError as exc:
+    except Exception as exc:
         logger.exception("Listing generation failed")
-        raise HTTPException(status_code=502, detail=f"Claude API error ({exc.status_code}).")
-    except anthropic.APIConnectionError:
-        raise HTTPException(status_code=502, detail="Could not reach the Claude API.")
+        raise HTTPException(status_code=502, detail=f"LLM generation failed: {exc}")
 
-    return {"listing": parsed.model_dump(), "model": get_settings().anthropic_model}
+    return {"listing": parsed.model_dump(), "model": get_active_model()}

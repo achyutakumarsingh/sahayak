@@ -9,7 +9,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
-import anthropic
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 
