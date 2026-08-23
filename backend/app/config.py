@@ -5,7 +5,11 @@ import json
 from typing import List, Optional, Union
 
 from pydantic import field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import (
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+)
 
 
 class Settings(BaseSettings):
@@ -49,7 +53,7 @@ class Settings(BaseSettings):
     # Prototype storage. Swap for a Postgres DSN when the round allows.
     database_url: str = "sqlite:///./sahayak.db"
 
-    # Browsers allowed to call this API.
+    # Browsers allowed to call this API (e.g. Vercel frontend, localhost).
     cors_origins: List[str] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
@@ -64,14 +68,48 @@ class Settings(BaseSettings):
                 return ["*"]
             if v.startswith("[") and v.endswith("]"):
                 try:
-                    return json.loads(v)
+                    parsed = json.loads(v)
+                    if isinstance(parsed, list):
+                        return [str(x).strip() for x in parsed if str(x).strip()]
                 except Exception:
                     pass
             return [x.strip() for x in v.split(",") if x.strip()]
         return v
 
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls,
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        """Customise settings sources so pydantic-settings does not fail on non-JSON list env vars."""
+        def wrap_source(source_obj: PydanticBaseSettingsSource):
+            source_cls = type(source_obj)
+
+            class SafeSettingsSource(source_cls):
+                def decode_complex_value(self, field_name: str, field, value):
+                    if field_name == "cors_origins" and isinstance(value, str):
+                        v = value.strip()
+                        if v.startswith("[") and v.endswith("]"):
+                            try:
+                                return json.loads(v)
+                            except Exception:
+                                pass
+                        if "," in v:
+                            return [x.strip() for x in v.split(",") if x.strip()]
+                        return [v] if v else ["*"]
+                    return super().decode_complex_value(field_name, field, value)
+
+            return SafeSettingsSource
+
+        env_safe = wrap_source(env_settings)(settings_cls)
+        dotenv_safe = wrap_source(dotenv_settings)(settings_cls, env_file=".env", env_file_encoding="utf-8")
+        return (init_settings, env_safe, dotenv_safe, file_secret_settings)
+
 
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
-
