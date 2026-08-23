@@ -9,13 +9,18 @@ import json
 import logging
 from typing import AsyncIterator
 
-import anthropic
 from fastapi import APIRouter, HTTPException, Path
 from fastapi.responses import StreamingResponse
 
 from app.config import get_settings
 from app.schemas.agent import AgentRequest
-from app.services.claude import get_client, has_api_key
+from app.services.llm import (
+    LLMAuthError,
+    LLMError,
+    LLMRateLimited,
+    has_api_key,
+    stream_text,
+)
 from app.services.grounding import GroundingNotFound, available_modules, load_grounding
 from app.services.prompts import build_system_prompt
 from app.services.usage import bump
@@ -61,9 +66,9 @@ async def ask(
         raise HTTPException(
             status_code=503,
             detail=(
-                "ANTHROPIC_API_KEY is not set. Add a real key to backend/.env "
+                "GEMINI_API_KEY is not set. Add a real key to backend/.env "
                 "and restart the backend. Get one at "
-                "https://console.anthropic.com/settings/keys"
+                "https://aistudio.google.com/apikey"
             ),
         )
 
@@ -73,40 +78,25 @@ async def ask(
 
     async def event_stream() -> AsyncIterator[str]:
         try:
-            async with get_client().messages.stream(
-                model=settings.anthropic_model,
-                max_tokens=settings.anthropic_max_tokens,
-                system=system,
-                messages=messages,
-                output_config={"effort": settings.anthropic_effort},
-            ) as stream:
-                async for text in stream.text_stream:
-                    yield sse({"type": "delta", "text": text})
+            answer_started = False
+            async for text in stream_text(system=system, messages=messages):
+                answer_started = True
+                yield sse({"type": "delta", "text": text})
 
-                # Counted on completion, not on request, so an aborted or
-                # failed stream is not recorded as an answered question.
+            # Counted on completion, not on request, so an aborted or failed
+            # stream is not recorded as an answered question.
+            if answer_started:
                 await bump("questions")
 
-                final = await stream.get_final_message()
-                yield sse(
-                    {
-                        "type": "done",
-                        "stopReason": final.stop_reason,
-                        "model": final.model,
-                        "outputTokens": final.usage.output_tokens,
-                    }
-                )
+            yield sse({"type": "done", "model": settings.gemini_model})
 
-        except anthropic.AuthenticationError:
-            yield sse({"type": "error", "code": "auth", "message": "The Claude API key was rejected."})
-        except anthropic.RateLimitError:
+        except LLMAuthError:
+            yield sse({"type": "error", "code": "auth", "message": "The AI service rejected the API key."})
+        except LLMRateLimited:
             yield sse({"type": "error", "code": "rate_limit", "message": "Too many requests just now. Try again shortly."})
-        except anthropic.APIStatusError as exc:
-            logger.exception("Claude API error for module %s", module)
-            code = "upstream" if exc.status_code >= 500 else "request"
-            yield sse({"type": "error", "code": code, "message": f"Claude API error ({exc.status_code})."})
-        except anthropic.APIConnectionError:
-            yield sse({"type": "error", "code": "network", "message": "Could not reach the Claude API."})
+        except LLMError as exc:
+            logger.exception("AI service error for module %s", module)
+            yield sse({"type": "error", "code": "upstream", "message": str(exc)})
         except Exception:
             # The stream has already begun, so a raised exception would just
             # truncate the body with no explanation for the reader.

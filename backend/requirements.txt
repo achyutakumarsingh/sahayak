@@ -6,8 +6,8 @@ pydantic-settings==2.15.0
 python-dotenv==1.2.3
 python-multipart==0.0.32
 
-# --- Claude orchestration ----------------------------------------------
-anthropic==1.0.0
+# --- LLM orchestration (Google Gemini) ---------------------------------
+google-genai==2.19.0
 httpx==0.28.1
 
 # --- Crop-disease classifier (Farmers module) ---------------------------
