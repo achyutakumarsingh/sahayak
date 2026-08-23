@@ -21,7 +21,7 @@ export function AccessibilityMenu({
   // React hydrates with the server snapshot (both off) and re-renders with the
   // stored values, so there is no mismatch here. The inline script has already
   // applied the visual state, so nothing flashes either.
-  const { largeText, voiceMode } = preferences;
+  const { largeText, voiceMode, offlineMode } = preferences;
 
   return (
     <section aria-labelledby="a11y-heading" className={cn("flex flex-col gap-4", className)}>
@@ -48,6 +48,21 @@ export function AccessibilityMenu({
         hint={dict.a11y.voiceModeHint}
         badge="Active"
       />
+
+      <Toggle
+        id="pref-offline-mode"
+        checked={offlineMode}
+        onChange={(next) => setPreference("offlineMode", next)}
+        label={dict.a11y.offlineMode}
+        hint={dict.a11y.offlineModeHint}
+        badge={dict.a11y.demoBadge}
+      />
+
+      {offlineMode ? (
+        <p role="status" className="rounded-card border border-warn/45 bg-surface-2 p-3 text-xs text-ink-2">
+          {dict.a11y.offlinePending}
+        </p>
+      ) : null}
 
       {voiceMode ? (
         <p role="status" className="rounded-card border border-ok/45 bg-ok/10 p-3 text-xs text-ink">

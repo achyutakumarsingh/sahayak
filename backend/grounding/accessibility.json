@@ -1,0 +1,52 @@
+{
+  "module": "accessibility",
+  "title": "Using Sahayak with a disability",
+  "status": "sample",
+  "note": "SAMPLE DATA. Written to exercise the grounded-agent pattern for a demo. Every entry here is illustrative and has not been reviewed by a subject expert. Replace with curated, sourced records before this module is shown to real users. The agent answers only from this file, so anything missing here is correctly refused.",
+  "last_reviewed": null,
+  "sources": [
+    "SAMPLE — replace with DEPwD guidance and verified helpline numbers"
+  ],
+  "entries": [
+    {
+      "id": "large-text",
+      "topic": "Making the text bigger",
+      "content": "Open the Accessibility panel in the sidebar (or the More sheet on a phone) and turn on Large text. It increases text size and spacing across every module and is remembered on this device."
+    },
+    {
+      "id": "voice-mode",
+      "topic": "Voice mode",
+      "content": "Voice mode lets you ask a question by speaking and hear the answer read back. Turn it on in the Accessibility panel. Where the browser does not support speech, typing still works everywhere."
+    },
+    {
+      "id": "keyboard",
+      "topic": "Using Sahayak without a mouse",
+      "content": "Every control can be reached with the Tab key and activated with Enter or Space. A 'Skip to main content' link is the first thing Tab reaches on each page. The focus outline shows where you are."
+    },
+    {
+      "id": "screen-reader",
+      "topic": "Screen readers",
+      "content": "Answers appear in a live region, so a screen reader announces them as they arrive. Numbers that count up expose their final value, not the intermediate ticks. Images that carry meaning have text alternatives."
+    },
+    {
+      "id": "high-contrast",
+      "topic": "High contrast",
+      "content": "Sahayak follows the high-contrast setting of your device. When it is on, decorative effects are switched off and borders are drawn at full strength."
+    },
+    {
+      "id": "offline",
+      "topic": "Working with a weak connection",
+      "content": "Questions you have already asked in a session can be answered again from the device without a connection. Turn on Offline mode in the Accessibility panel to see how the app behaves without a network."
+    },
+    {
+      "id": "language",
+      "topic": "Changing language",
+      "content": "Use the EN / हि switch in the sidebar or the top bar. It keeps you on the same screen and remembers the choice for next time. Every screen exists in both languages."
+    },
+    {
+      "id": "helplines",
+      "topic": "Disability helplines in India",
+      "content": "The national helpline for persons with disabilities is 1800-111-11 (Department of Empowerment of Persons with Disabilities). District Disability Rehabilitation Centres provide in-person assistance."
+    }
+  ]
+}

@@ -24,7 +24,9 @@
     "moduleCount": "8 modules",
     "communityLabel": "Serves",
     "browseAll": "Browse all eight modules",
-    "hero": "One trained model. Eight communities. Grounded answers, or none at all."
+    "hero": "One trained model. Eight communities. Grounded answers, or none at all.",
+    "heroLead": "One trained model. Eight communities. ",
+    "heroAccent": "Grounded answers, or none at all."
   },
   "status": {
     "scaffold": "Scaffold",
@@ -90,7 +92,11 @@
     "comingSoon": "Not wired up yet",
     "voicePending": "Voice mode is on and your choice is saved, but speech input and output are not connected yet. Nothing on screen will read aloud until they are.",
     "on": "On",
-    "off": "Off"
+    "off": "Off",
+    "offlineMode": "Offline mode",
+    "offlineModeHint": "Simulates having no connection. Questions you have already asked in this session still answer instantly, from this device.",
+    "demoBadge": "Demo",
+    "offlinePending": "Offline mode is on. Nothing is being sent to the server — only questions already answered in this session can be shown."
   },
   "auth": {
     "signIn": "Sign in",
@@ -140,12 +146,54 @@
         "Is 1.8 metre wave height safe for a small boat?",
         "What number do I call in an emergency at sea?",
         "What is the price of fish in Kochi today?"
+      ],
+      "accessibility": [
+        "How do I make the text bigger?",
+        "Can I use Sahayak without a mouse?",
+        "What is the disability helpline number?"
+      ],
+      "education": [
+        "Explain photosynthesis simply",
+        "How do I add fractions with different denominators?",
+        "What is friction?"
+      ],
+      "disaster": [
+        "What should I keep ready before a flood?",
+        "What do I do during a cyclone?",
+        "What is the emergency number?"
+      ],
+      "services": [
+        "Where can I check which schemes I am eligible for?",
+        "What documents do I usually need?",
+        "Am I eligible for a housing scheme?"
+      ],
+      "farmers": [
+        "My tomato leaves have brown spots — what should I do?",
+        "Who can confirm a crop disease?",
+        "What is the Kisan Call Centre number?"
+      ],
+      "artisans": [
+        "What makes a good product listing?",
+        "How should I price my work?",
+        "Can I use a GI craft name?"
+      ],
+      "vendors": [
+        "How do I work out what I really earn?",
+        "How do I reduce unsold stock?",
+        "What should I record each day?"
       ]
     },
     "listen": "Listen",
     "stopAudio": "Stop speaking",
     "micStart": "Speak question",
-    "micListening": "Listening…"
+    "micListening": "Listening…",
+    "source": "Source",
+    "sourceDataset": "grounding dataset",
+    "sourceNone": "no matching entry",
+    "offlineMiss": "You are in offline mode and this question has not been answered yet in this session. Turn offline mode off, or ask something you have already asked.",
+    "offlineBadge": "Offline · cached",
+    "sampleDataLabel": "Sample data",
+    "sampleDataBody": "This module answers from a small illustrative dataset written for the prototype. It has not been reviewed by a subject expert and is not live information. Check anything important with the relevant authority."
   },
   "search": {
     "placeholder": "Search modules or ask a question… (Cmd + K)",
@@ -348,5 +396,16 @@
     "show": "Show impact",
     "hide": "Hide impact",
     "unavailable": "Counters are not available right now."
+  },
+  "demo": {
+    "title": "Demo Mode",
+    "subtitle": "Scripted walkthrough for judging",
+    "badge": "Demo",
+    "stop": "Stop",
+    "advanceHint": "any key to advance · Esc to stop",
+    "demoFarmers": "Farmers — the real ONNX classifier running on a bundled sample leaf.",
+    "demoServices": "Public Services — a grounded answer, cited back to the dataset entry it came from.",
+    "demoHindi": "The same screen in Hindi. Every module exists in both languages.",
+    "demoEnglish": "Back to English. End of walkthrough."
   }
 }

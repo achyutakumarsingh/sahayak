@@ -48,6 +48,7 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [flag, setFlag] = useState<FlagState>("idle");
+  const [autoRun, setAutoRun] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -77,6 +78,50 @@ export function CropDiagnosis({ locale, dict }: { locale: Locale; dict: Dictiona
     },
     [t],
   );
+
+  // Demo Mode: fetch the bundled sample leaf and feed it through the ordinary
+  // path. Nothing is faked — the classifier really runs on it.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("demo") !== "diagnose") return;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const blob = await (await fetch("/demo/sample-leaf.png")).blob();
+        const dataUrl: string = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+        if (cancelled) return;
+        setPreview(dataUrl);
+        setPayload({ base64: dataUrl.split(",")[1] ?? "", mediaType: "image/png" });
+        setAutoRun(true);
+      } catch {
+        /* demo aid only — a failure here must not disturb the real screen */
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!autoRun || !payload) return;
+    // Deferred out of the effect body. setTimeout rather than rAF: a browser
+    // pauses rAF entirely in a background tab, which would silently leave the
+    // demo trigger unfired.
+    const timer = window.setTimeout(() => {
+      setAutoRun(false);
+      void run();
+    }, 0);
+    return () => window.clearTimeout(timer);
+    // run() is stable enough for this one-shot demo trigger.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoRun, payload]);
 
   async function run() {
     if (!payload) return;

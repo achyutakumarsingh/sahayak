@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { HeroStats } from "@/components/hero-stats";
 import { ImpactStrip } from "@/components/impact-strip";
 import { Reveal } from "@/components/reveal";
 import { ModuleCard } from "@/components/module-card";
@@ -24,11 +25,14 @@ export default async function HomePage({
       <Reveal>
         <p className="label">{dict.home.eyebrow}</p>
         <h1 className="display mt-5 max-w-[19ch] text-[length:var(--text-hero)] text-ink">
-          {dict.home.hero}
+          {dict.home.heroLead}
+          {/* Exactly one accent phrase in the headline. */}
+          <span className="text-accent">{dict.home.heroAccent}</span>
         </h1>
       </Reveal>
       <Reveal delay={80}>
         <p className="mt-8 max-w-2xl text-lg text-ink-2">{dict.home.intro}</p>
+        <HeroStats dict={dict} />
       </Reveal>
 
       <section aria-labelledby="modules-heading" className="mt-16 sm:mt-20">

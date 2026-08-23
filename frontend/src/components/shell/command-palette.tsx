@@ -1,10 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { SearchIcon } from "@/components/ui/icons";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
+import { demoSteps, writeStep } from "@/lib/demo-tour";
 import { modules } from "@/lib/modules";
 import { localePath } from "@/lib/routes";
 
@@ -15,6 +17,7 @@ export function CommandPalette({
   locale: Locale;
   dict: Dictionary;
 }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
 
@@ -79,6 +82,27 @@ export function CommandPalette({
                 ESC
               </kbd>
             </div>
+
+            {/* Dev-only: a scripted run for judges, not an end-user feature. */}
+            {process.env.NODE_ENV === "development" &&
+            "demo mode".includes(query.toLowerCase().trim()) ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  const steps = demoSteps(locale);
+                  writeStep(0);
+                  router.push(steps[0].href);
+                }}
+                className="flex flex-col gap-0.5 rounded-chip border border-accent p-2.5 text-left transition-colors hover:bg-surface-2"
+              >
+                <span className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-ink">{dict.demo.title}</span>
+                  <span className="label text-accent">{dict.demo.badge}</span>
+                </span>
+                <span className="text-xs text-ink-2">{dict.demo.subtitle}</span>
+              </button>
+            ) : null}
 
             <div className="max-h-72 overflow-y-auto flex flex-col gap-1">
               {filteredModules.length === 0 ? (

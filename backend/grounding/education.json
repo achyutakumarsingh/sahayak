@@ -1,22 +1,52 @@
 {
   "module": "education",
-  "title": "NCERT doubt solving",
-  "status": "placeholder",
-  "note": "PLACEHOLDER CORPUS. Written to exercise the grounded-agent pattern, not to be relied on. Replace every entry with curated, sourced data before this module is shown to real users. The agent answers only from this file, so anything missing here is correctly refused.",
+  "title": "Doubt solving for school students",
+  "status": "sample",
+  "note": "SAMPLE DATA. Written to exercise the grounded-agent pattern for a demo. Every entry here is illustrative and has not been reviewed by a subject expert. Replace with curated, sourced records before this module is shown to real users. The agent answers only from this file, so anything missing here is correctly refused.",
   "last_reviewed": null,
   "sources": [
-    "INTENTIONALLY EMPTY — load real NCERT chapter excerpts with class, subject, chapter and page"
+    "INTENTIONALLY SAMPLE — load real NCERT excerpts with class, subject, chapter and page before use"
   ],
   "entries": [
     {
-      "id": "corpus-empty",
-      "topic": "Chapter excerpts not yet loaded",
-      "content": "No NCERT chapter excerpts have been loaded into this module yet. Until they are, this module cannot answer subject questions and must say so rather than answering from general knowledge. Every answer must cite the chapter and page it came from."
+      "id": "how-citations-work",
+      "topic": "How answers are cited",
+      "content": "Each entry in this dataset carries an id, and every answer names the id it came from. When real NCERT chapter excerpts are loaded, those ids will identify the class, subject and chapter so a student can turn to the page in their own book."
     },
     {
-      "id": "how-citations-work",
-      "topic": "How answers will be cited",
-      "content": "When chapter excerpts are loaded, each entry carries its class, subject, chapter number and chapter title, and every answer names them so a student can turn to the page in their own book."
+      "id": "sample-photosynthesis",
+      "topic": "Photosynthesis (SAMPLE)",
+      "content": "SAMPLE ENTRY, not a real textbook excerpt. Green plants make their own food using sunlight, water taken up by the roots, and carbon dioxide from the air. The green pigment chlorophyll captures the sunlight. Oxygen is released as a by-product."
+    },
+    {
+      "id": "sample-states-of-matter",
+      "topic": "States of matter (SAMPLE)",
+      "content": "SAMPLE ENTRY, not a real textbook excerpt. Matter around us exists as solid, liquid or gas. Particles in a solid are packed closely and vibrate in place; in a liquid they can slide past each other; in a gas they move freely and are far apart."
+    },
+    {
+      "id": "sample-fractions",
+      "topic": "Adding fractions (SAMPLE)",
+      "content": "SAMPLE ENTRY, not a real textbook excerpt. To add fractions with different denominators, first rewrite them with a common denominator, then add only the numerators. For example one half plus one third becomes three sixths plus two sixths, which is five sixths."
+    },
+    {
+      "id": "sample-water-cycle",
+      "topic": "The water cycle (SAMPLE)",
+      "content": "SAMPLE ENTRY, not a real textbook excerpt. Water from oceans, rivers and lakes evaporates in the heat of the sun, rises and cools into clouds, and falls back as rain or snow. Water that falls on land flows back to the sea or soaks into the ground."
+    },
+    {
+      "id": "sample-force",
+      "topic": "Force and motion (SAMPLE)",
+      "content": "SAMPLE ENTRY, not a real textbook excerpt. A force is a push or a pull. A force can start a still object moving, stop a moving object, change its speed, or change its direction. Friction is a force that opposes motion between two surfaces in contact."
+    },
+    {
+      "id": "sample-photosynthesis-vs-respiration",
+      "topic": "Photosynthesis and respiration (SAMPLE)",
+      "content": "SAMPLE ENTRY, not a real textbook excerpt. Photosynthesis takes in carbon dioxide and gives out oxygen, and happens in the light. Respiration takes in oxygen and gives out carbon dioxide, and happens all the time, in both plants and animals."
+    },
+    {
+      "id": "study-help",
+      "topic": "If the dataset does not cover your question",
+      "content": "This dataset holds only a handful of sample topics. When a question falls outside it, the correct answer is to say so. Ask your teacher, or check the chapter in your own NCERT textbook."
     }
   ]
 }
