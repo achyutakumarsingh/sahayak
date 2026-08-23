@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: sahayak-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    region: oregon
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.0
+      - key: ENVIRONMENT
+        value: production
+      - key: APP_NAME
+        value: "Sahayak API"
+      - key: ANTHROPIC_MODEL
+        value: claude-sonnet-5
+      - key: ANTHROPIC_MAX_TOKENS
+        value: "700"
+      - key: ANTHROPIC_EFFORT
+        value: low
+      - key: DATA_GOV_IN_API_KEY
+        value: 579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b
+      - key: DATABASE_URL
+        value: sqlite:///./sahayak.db
+      - key: CROP_MODEL_PATH
+        value: models/crop_disease.onnx
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: ANTHROPIC_API_KEY
+        sync: false

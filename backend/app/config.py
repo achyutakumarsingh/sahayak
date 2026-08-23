@@ -1,8 +1,10 @@
 """Runtime configuration, loaded from the environment and backend/.env."""
 
 from functools import lru_cache
-from typing import List, Optional
+import json
+from typing import List, Optional, Union
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -45,7 +47,23 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000",
     ]
 
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
+        if isinstance(v, str):
+            v = v.strip()
+            if not v:
+                return ["*"]
+            if v.startswith("[") and v.endswith("]"):
+                try:
+                    return json.loads(v)
+                except Exception:
+                    pass
+            return [x.strip() for x in v.split(",") if x.strip()]
+        return v
+
 
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
