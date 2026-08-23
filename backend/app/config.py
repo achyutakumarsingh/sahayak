@@ -54,7 +54,9 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./sahayak.db"
 
     # Browsers allowed to call this API (e.g. Vercel frontend, localhost).
-    cors_origins: List[str] = [
+    # Annotated as Union[List[str], str] so pydantic-settings does not attempt
+    # automatic JSON decoding on comma-separated or wildcard environment strings.
+    cors_origins: Union[List[str], str] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
     ]
