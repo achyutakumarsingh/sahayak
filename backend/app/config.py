@@ -42,11 +42,13 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./sahayak.db"
 
     # Browsers allowed to call this API.
-    cors_origins: List[str] = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "https://bosc-1.onrender.com",
-    ]
+   cors_origins: List[str] = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://bosc-1.onrender.com",
+    "https://bosc-f72c.vercel.app",
+    "https://bosc-f72c-7pcvcokyw-t99373555-9629s-projects.vercel.app",
+]
 
 
 @lru_cache
