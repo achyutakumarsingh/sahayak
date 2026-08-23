@@ -17,7 +17,7 @@ services:
       - key: APP_NAME
         value: "Sahayak API"
       - key: GEMINI_MODEL
-        value: gemini-2.5-flash
+        value: gemini-3.6-flash
       - key: GEMINI_API_KEY
         sync: false
       - key: DATA_GOV_IN_API_KEY

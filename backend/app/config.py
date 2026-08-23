@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     # Gemini — every "agent" module in Sahayak runs through this key.
     gemini_api_key: Optional[str] = None
     google_api_key: Optional[str] = None
-    gemini_model: str = "gemini-2.5-flash"
+    gemini_model: str = "gemini-3.6-flash"
 
     # Optional Anthropic key if configured
     anthropic_api_key: Optional[str] = None

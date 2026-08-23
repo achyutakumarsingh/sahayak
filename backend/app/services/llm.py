@@ -85,17 +85,16 @@ def get_client() -> genai.Client:
 
 def _config(*, system: str, max_tokens: Optional[int] = None, **extra: Any) -> types.GenerateContentConfig:
     settings = get_settings()
-    return types.GenerateContentConfig(
-        system_instruction=system,
-        max_output_tokens=max_tokens or settings.gemini_max_output_tokens,
-        # These modules answer in 40-80 words from a small corpus. Thinking adds
-        # latency and tokens for no benefit on a lookup, so it is off by default
-        # — the same reasoning behind the old low effort setting.
-        thinking_config=types.ThinkingConfig(
-            thinking_budget=settings.gemini_thinking_budget
-        ),
+    config_args: dict[str, Any] = {
+        "system_instruction": system,
+        "max_output_tokens": max_tokens or settings.gemini_max_output_tokens,
         **extra,
-    )
+    }
+    if settings.gemini_thinking_budget and settings.gemini_thinking_budget > 0:
+        config_args["thinking_config"] = types.ThinkingConfig(
+            thinking_budget=settings.gemini_thinking_budget
+        )
+    return types.GenerateContentConfig(**config_args)
 
 
 def _to_contents(messages: Sequence[dict[str, str]]) -> list[types.Content]:
